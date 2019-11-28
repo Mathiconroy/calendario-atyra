@@ -2,6 +2,6 @@ from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 
 def index(request):
-    return HttpResponse('<b>Hello World!</b>')
+    return render(request, 'calendarios/index.html')
 
 # Create your views here.
