@@ -6,5 +6,3 @@ def index(request):
 
 def add_client_form(request):
     return render(request, 'calendarios/form.html')
-
-# Create your views here.

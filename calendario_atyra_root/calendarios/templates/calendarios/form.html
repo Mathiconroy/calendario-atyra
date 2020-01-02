@@ -4,7 +4,7 @@
 <div class="text-center">
     <h1>Formulario - Añadir cliente</h1>
 </div>
-<form><!-- ADD INFO TO THIS! -->
+<form action="add_client_form" method="POST"><!-- ADD INFO TO THIS! -->
     <label for="casa">Casa</label>
     <input type="number" class="form-control" id="casa" min="1" max="3" placeholder="Casa reservada">
 
@@ -29,6 +29,8 @@
     <textarea row="5" class="form-control" id="notas" placeholder="Notas sobre el cliente"></textarea>
     <br>
 <form>
-<br>
-<button type="submit" class="btn btn-primary">Enviar</button>
+
+<div class="text-center">
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</div>
 {% endblock %}
