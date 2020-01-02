@@ -2,10 +2,12 @@
 
 {% block main %}
 <div class="text-center">
-    <h1>Formulario - Añadir cliente</h1>
+    <h1>Formulario - Añadir reserva</h1>
 </div>
-<form action="add_client_form" method="POST"><!-- ADD INFO TO THIS! -->
-    <label for="casa">Casa</label>
+<form action="/add_client_form" method="POST"><!-- ADD INFO TO THIS! -->
+    {% csrf_token %}
+    {{ form.as_p }}
+    <!-- <label for="casa">Casa</label>
     <input type="number" class="form-control" id="casa" min="1" max="3" placeholder="Casa reservada">
 
     <br>
@@ -29,6 +31,7 @@
     <textarea row="5" class="form-control" id="notas" placeholder="Notas sobre el cliente"></textarea>
     <br>
 <form>
+-->
 
 <div class="text-center">
     <button type="submit" class="btn btn-primary">Enviar</button>
