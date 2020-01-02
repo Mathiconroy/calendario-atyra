@@ -1,10 +1,11 @@
 from django.db import models
 
-class Reservas(models.Model):
-    casa = models.CharField(max_length=5)
-    nombre = models.CharField(max_length=150)
-    cantidad_personas = models.IntegerField(max_length=5)
-    fecha = models.DateField(blank=False)
+class Reservas(models.Model): # THE ID FIELD IS ADDED AUTOMATICALLY
+    casa = models.CharField(null=False, max_length=5)
+    nombre = models.CharField(null=False, max_length=150)
+    cantidad_personas = models.IntegerField(null=False)
+    fecha_inicio = models.DateField(null=False)
+    fecha_fin = models.DateField(null=False)
     notas = models.TextField()
 
     def __str__(self):
