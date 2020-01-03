@@ -3,8 +3,8 @@
 {% block main %}
     <div class="text-center">
         <h1><b>Reservas</b></h1>
-        <form action="/">
-            <button type="button" class="btn btn-primary">Añadir entrada</button>
+        <form action="/add_client_form" method="GET">
+            <button type="button" class="btn btn-primary">Añadir reservas</button>
         </form>
     </div>
 
@@ -13,13 +13,17 @@
     <table class="table">
         <thead>
             <tr>
-                <th scope="col">Nombre</th>
+                <th scope="col">Casa 1</th>
+                <th scope="col">Casa 2</th>
+                <th scope="col">Casa 3</th>
             </tr>
         </thead>
         <tbody>
+            {% for reserva in reservas %}
             <tr>
-                <td>Mathias</td>
+                <td>{{ nombre }}</td>
             </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}
