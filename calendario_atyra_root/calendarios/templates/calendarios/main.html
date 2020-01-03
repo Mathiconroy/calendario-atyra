@@ -4,7 +4,7 @@
     <div class="text-center">
         <h1><b>Reservas</b></h1>
         <form action="/add_client_form" method="GET">
-            <button type="button" class="btn btn-primary">Añadir reservas</button>
+            <input type="submit" class="btn btn-primary" value="Añadir reserva">
         </form>
     </div>
 
@@ -21,6 +21,8 @@
         <tbody>
             {% for reserva in reservas %}
             <tr>
+                <td>{{ reserva.nombre }}</td>
+                <td>{{ nombre }}</td>
                 <td>{{ nombre }}</td>
             </tr>
             {% endfor %}
