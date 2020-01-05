@@ -13,17 +13,25 @@
     <table class="table">
         <thead>
             <tr>
+                <th scope="col">Fecha</th>
                 <th scope="col">Casa 1</th>
                 <th scope="col">Casa 2</th>
                 <th scope="col">Casa 3</th>
             </tr>
         </thead>
         <tbody>
-            {% for reserva in reservas %}
+            {% for date in date_list %}
             <tr>
-                <td>{{ reserva.nombre }}</td>
-                <td>{{ nombre }}</td>
-                <td>{{ nombre }}</td>
+                <td>{{ date }}</td>
+                {% for reserva in reservas %} <!-- Looks like we have to make this comparision in the code :/ -->
+                    {% if reserva.fecha_inicio <= date and date <= reserva.fecha_fin and reserva.casa == 1 %}
+                    <td>Reservado</td>
+                    {% else %}
+                    <td>{{ reserva.fecha_inicio }} {{ reserva.fecha_fin }} {{ date }} Libre</td>
+                    {% endif %}
+                    <td>{{ nombre }}</td>
+                    <td>{{ nombre }}</td>
+                {% endfor %}
             </tr>
             {% endfor %}
         </tbody>
