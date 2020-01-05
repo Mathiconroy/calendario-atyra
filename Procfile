@@ -1,0 +1,1 @@
+web: gunicorn calendario_atyra.wsgi --log-file -
