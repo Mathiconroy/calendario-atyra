@@ -14,7 +14,7 @@ class Reserva():
     casa3 = False
 
 def index(request): # TODO: Populate the table (Having problems with the logic)
-    # reservas = (Reservas.objects.filter(fecha_inicio__lte=datetime.date.today() + datetime.timedelta(days=30)), False)
+    # DON'T FORGET THAT CASA IS SAVED AS A STRING IN CASE ITS NAME IS CHANGED!!!!!!!!!!!!
     reservas = Reservas.objects.filter(fecha_inicio__lte=datetime.date.today() + datetime.timedelta(days=30))
     date_list = [datetime.date.today() + datetime.timedelta(days=x) for x in range(30)]
     reservas_list = []
@@ -28,13 +28,7 @@ def index(request): # TODO: Populate the table (Having problems with the logic)
             elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == "3":
                 r.casa = True
         reservas_list.append(r)
-    """
-    if reservas:
-        for date in date_list:
-            for reserva in reservas:
-                if reserva[0].fecha_inicio <= date <= reserva[0].fecha_fin:
-                    reserva[1] = True
-    """
+
     return render(request, 'calendarios/main.html', {'reservas':reservas_list, 'date_list':date_list})
 
 def add_client_form(request):
