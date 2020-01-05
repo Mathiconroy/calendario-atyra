@@ -5,10 +5,29 @@ from .models import Reservas
 
 import datetime
 
+class Reserva():
+    def __init__(self, dia):
+        self.dia = dia
+
+    casa1 = False
+    casa2 = False
+    casa3 = False
+
 def index(request): # TODO: Populate the table (Having problems with the logic)
     # reservas = (Reservas.objects.filter(fecha_inicio__lte=datetime.date.today() + datetime.timedelta(days=30)), False)
     reservas = Reservas.objects.filter(fecha_inicio__lte=datetime.date.today() + datetime.timedelta(days=30))
     date_list = [datetime.date.today() + datetime.timedelta(days=x) for x in range(30)]
+    reservas_list = []
+    for fecha in date_list:
+        r = Reserva(dia=fecha)
+        for reserva in reservas:
+            if reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == 1:
+                r.casa1 = True
+            elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == 2:
+                r.casa2 = True
+            elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == 3:
+                r.casa = True
+        reservas_list.append(r)
     """
     if reservas:
         for date in date_list:
@@ -16,7 +35,7 @@ def index(request): # TODO: Populate the table (Having problems with the logic)
                 if reserva[0].fecha_inicio <= date <= reserva[0].fecha_fin:
                     reserva[1] = True
     """
-    return render(request, 'calendarios/main.html', {'reservas':reservas, 'date_list':date_list})
+    return render(request, 'calendarios/main.html', {'reservas':reservas_list, 'date_list':date_list})
 
 def add_client_form(request):
     if request.method == "POST":
