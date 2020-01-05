@@ -21,11 +21,11 @@ def index(request): # TODO: Populate the table (Having problems with the logic)
     for fecha in date_list:
         r = Reserva(dia=fecha)
         for reserva in reservas:
-            if reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == 1:
+            if reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == "1":
                 r.casa1 = True
-            elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == 2:
+            elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == "2":
                 r.casa2 = True
-            elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == 3:
+            elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == "3":
                 r.casa = True
         reservas_list.append(r)
     """
