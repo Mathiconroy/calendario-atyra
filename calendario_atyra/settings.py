@@ -139,7 +139,6 @@ STATICFILES_DIR = [
     os.path.join(BASE_DIR, 'static/'),
 ]
 
-
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 import dj_database_url 
