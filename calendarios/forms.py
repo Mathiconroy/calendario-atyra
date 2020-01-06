@@ -26,3 +26,5 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by default
                 raise forms.ValidationError("La fecha final es antes de la fecha inicial, asegurese de no estar poniendolas al reves.")
             elif Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=casa):
                 raise forms.ValidationError("Esta fecha ya fue reservada para esta casa.")
+        
+        return cleaned_data
