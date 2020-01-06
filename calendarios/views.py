@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
+from django.core.mail import send_mail
 from .forms import AddClientForm
 from .models import Reservas
 
@@ -45,3 +46,7 @@ def add_client_form(request):
         form = AddClientForm()
 
     return render(request, 'calendarios/form.html', {'form':form})
+
+def test_mail(request):
+    send_mail('Hello', 'Hello', 'mathias.martinez018@gmail.com', ['mathiconroy@gmail.com'])
+    return render('calendarios/test.html')
