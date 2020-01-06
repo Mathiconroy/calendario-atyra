@@ -16,7 +16,6 @@ import django_heroku
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = 'zq$&ay#cqx&b%e_n^_0u@nhcbor8a0ci2(r)dn6+ji(!$*0-e7'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -133,11 +131,14 @@ EMAIL_HOST_PASSWORD = 'AsdfOwoOmg123456'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
+# STATIC_URL = '/static/'
 
 STATICFILES_DIR = [
     os.path.join(BASE_DIR, 'calendario_atyra/static'),
+    os.path.join(BASE_DIR, 'calendarios/static'),
+    os.path.join(BASE_DIR, 'static/'),
 ]
+
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
