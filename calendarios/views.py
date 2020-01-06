@@ -26,7 +26,7 @@ def index(request): # TODO: Populate the table (Having problems with the logic)
             elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == "2":
                 r.casa2 = True
             elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == "3":
-                r.casa = True
+                r.casa3 = True
         reservas_list.append(r)
 
     return render(request, 'calendarios/main.html', {'reservas':reservas_list, 'date_list':date_list})
