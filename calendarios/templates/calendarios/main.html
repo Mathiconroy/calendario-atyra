@@ -23,7 +23,7 @@
         <tbody>
             {% for reserva in reservas %}
             <tr>
-                <td>{{ reserva.dia|date:"d/m/Y" }}</td>
+                <td>{{ reserva.dia|date:"l - d/m/Y" }}</td>
                 {% if reserva.casa1 %}
                     <td bgcolor="#FF6666">Ocupado por {{ reserva.nombre1 }}</td>
                 {% else %}
