@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 
 {% block main %}
-    
+<div class="text-center">
+    <p>Nombre: {{ reserva.nombre }}</p>
+    <p>Casa: {{ reserva.casa }}</p>
+    <p>Estadia: {{ reserva.fecha_inicio }} al {{ reserva.fecha_fin }}</p>
+    <p>Notas: {{ reserva.notas }}</p>
+</div>
 {% endblock %}
