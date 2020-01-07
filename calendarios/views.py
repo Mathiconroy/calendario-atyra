@@ -53,6 +53,9 @@ def add_client_form(request):
 
     return render(request, 'calendarios/form.html', {'form':form})
 
+def view_client_form(request, id):
+    return render(request, 'calendarios/view_form.html', {'results':results})
+
 def test_mail(request):
     send_mail('Test', 'Hello, this is a test.', 'mathias.martinez018@gmail.com', recipient_list=['mathiconroy@gmail.com'])
     return render(request, 'calendarios/test.html')
