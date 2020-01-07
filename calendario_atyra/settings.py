@@ -75,6 +75,10 @@ WSGI_APPLICATION = 'calendario_atyra.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+    } 
 }
 # Take this in default to use the sqlite3 db
 # 'default': {
@@ -131,18 +135,17 @@ EMAIL_HOST_PASSWORD = 'AsdfOwoOmg123456'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-# STATIC_URL = '/static/'
+STATIC_URL = '/static/'
 
-STATICFILES_DIR = [
-    os.path.join(BASE_DIR, 'calendario_atyra/static'),
-    os.path.join(BASE_DIR, 'calendarios/static'),
-    os.path.join(BASE_DIR, 'static/'),
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 import dj_database_url 
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 # Make this a comment to use the sqlite3 db
 
 django_heroku.settings(locals())
