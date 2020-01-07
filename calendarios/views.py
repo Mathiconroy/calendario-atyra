@@ -17,23 +17,24 @@ class Reserva(): # Represents a row in the table in index route
     casa3 = False
     nombre3 = None
 
-def index(request):
+def index(request): # TODO: Rewrite this mess, it's a disaster
     # DON'T FORGET THAT CASA IS SAVED AS A STRING IN CASE ITS NAME IS CHANGED!!!!!!!!!!!!
-    reservas = Reservas.objects.filter(fecha_inicio__lte=datetime.date.today() + datetime.timedelta(days=30))
+    reservas = Reservas.objects.filter(fecha_inicio__lte=datetime.date.today() + datetime.timedelta(days=30)).order_by('fecha_inicio')
     date_list = [datetime.date.today() + datetime.timedelta(days=x) for x in range(30)]
     reservas_list = []
     for fecha in date_list:
         r = Reserva(dia=fecha)
         for reserva in reservas:
-            if reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == "1":
-                r.casa1 = True
-                r.nombre1 = reserva.nombre
-            elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == "2":
-                r.casa2 = True
-                r.nombre2 = reserva.nombre
-            elif reserva.fecha_inicio <= fecha <= reserva.fecha_fin and reserva.casa == "3":
-                r.casa3 = True
-                r.nombre3 = reserva.nombre
+            if reserva.fecha_inicio <= fecha <= reserva.fecha_fin:
+                if reserva.casa == "1":
+                    r.casa1 = True
+                    r.nombre1 = reserva.nombre
+                elif reserva.casa == "2":
+                    r.casa2 = True
+                    r.nombre2 = reserva.nombre
+                elif reserva.casa == "3":
+                    r.casa3 = True
+                    r.nombre3 = reserva.nombre
         reservas_list.append(r)
 
     return render(request, 'calendarios/main.html', {'reservas':reservas_list})
@@ -54,7 +55,8 @@ def add_client_form(request):
     return render(request, 'calendarios/form.html', {'form':form})
 
 def view_client_form(request, id):
-    return render(request, 'calendarios/view_form.html', {'results':results})
+    reserva = Reservas.objects.get(id=id)
+    return render(request, 'calendarios/view_form.html', {'reserva':reserva})
 
 def test_mail(request):
     send_mail('Test', 'Hello, this is a test.', 'mathias.martinez018@gmail.com', recipient_list=['mathiconroy@gmail.com'])
