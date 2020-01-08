@@ -17,9 +17,9 @@ def index(request): # TODO: Rewrite this mess, it's a disaster
     reservas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
     date_list = [date.today() + timedelta(days=x) for x in range(30)]
     reservas_list = []
-    for fecha in date_list: # TODO: See what the actual fuck to do here, it seems impossible
-        pass
-    return render(request, 'calendarios/main.html')
+    # for fecha in date_list: # TODO: See what the actual fuck to do here, it seems impossible
+    #    for reserva in reservas:
+    return render(request, 'calendarios/main.html', {'fechas':date_list, 'reservas':reservas})
 
 def add_client_form(request):
     if request.method == "POST":

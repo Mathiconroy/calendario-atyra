@@ -21,12 +21,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for reserva in reservas %}
+            {% for fecha in fechas %}
             <tr>
-                {% for r in reserva %}
-                    <td>{{ r.dia }}</td>
-                    {% if r.casa == "1" %}
-                        <td bgcolor="#FF6666">Ocupado por {{ r.nombre }}</td>
+                {% for reserva in reservas %}
+                    <td>{{ fecha }}</td>
+                    {% if reserva.casa == "1" and reserva.fecha_inicio <= fecha <= reserva.fecha_fin %}
+                        <td bgcolor="#FF6666">Ocupado por {{ reserva.nombre }}</td>
                     {% else %}
                         <td bgcolor="#66FF66">Libre</td>
                     {% endif %}
