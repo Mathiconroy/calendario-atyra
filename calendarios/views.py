@@ -9,17 +9,34 @@ from datetime import date, timedelta
 class TableRow(): # Represents a row in the table in index route
     def __init__(self, dia):
         self.dia = dia
-        
-    reservas_row = list() # List of all the reservas in that row
+    
+    casa1 = None
+    nombre1 = None
+    casa2 = None
+    nombre2 = None
+    casa3 = None
+    nombre3 = None
 
 def index(request): # TODO: Rewrite this mess, it's a disaster
     # DON'T FORGET THAT CASA IS SAVED AS A STRING IN CASE ITS NAME IS CHANGED!!!!!!!!!!!!
     reservas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
     date_list = [date.today() + timedelta(days=x) for x in range(30)]
     reservas_list = []
-    # for fecha in date_list: # TODO: See what the actual fuck to do here, it seems impossible
-    #    for reserva in reservas:
-    return render(request, 'calendarios/main.html', {'fechas':date_list, 'reservas':reservas})
+    for fecha in date_list:
+        r = TableRow(dia=fecha)
+        for reserva in reservas:
+            if reserva.fecha_inicio <= fecha <= reserva.fecha_fin:
+                if reserva.casa == "1":
+                    r.casa1 = True
+                    r.nombre1 = reserva.nombre
+                if reserva.casa == "2":
+                    r.casa2 = True
+                    r.nombre2 = reserva.nombre
+                if reserva.casa == "3":
+                    r.casa3 = True
+                    r.nombre3 = reserva.nombre
+        reservas_list.append(r)
+    return render(request, 'calendarios/main.html', {'reservas':reservas_list})
 
 def add_client_form(request):
     if request.method == "POST":
