@@ -17,7 +17,7 @@ class TableRow(): # Represents a row in the table in index route
     casa3 = None
     nombre3 = None
 
-def index(request): # TODO: Rewrite this mess, it's a disaster
+def index(request): # TODO: See how to make this iterable/scalable
     # DON'T FORGET THAT CASA IS SAVED AS A STRING IN CASE ITS NAME IS CHANGED!!!!!!!!!!!!
     reservas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
     date_list = [date.today() + timedelta(days=x) for x in range(30)]
