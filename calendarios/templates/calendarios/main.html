@@ -23,22 +23,24 @@
         <tbody>
             {% for reserva in reservas %}
             <tr>
-                <td>{{ reserva.dia }}</td>
-                {% if reserva.casa1 %}
-                    <td bgcolor="#FF6666">Ocupado por {{ reserva.nombre1 }}</td>
-                {% else %}
-                    <td bgcolor="#66FF66">Libre</td>
-                {% endif %}
-                {% if reserva.casa2 %}
-                    <td bgcolor="#FF6666">Ocupado por {{ reserva.nombre2 }}</td>
-                {% else %}
-                    <td bgcolor="#66FF66">Libre</td>
-                {% endif %}
-                {% if reserva.casa3 %}
-                    <td bgcolor="#FF6666">Ocupado por {{ reserva.nombre3 }}</td>
-                {% else %}
-                    <td bgcolor="#66FF66">Libre</td>
-                {% endif %}
+                {% for r in reserva %}
+                    <td>{{ r.dia }}</td>
+                    {% if r.casa == "1" %}
+                        <td bgcolor="#FF6666">Ocupado por {{ r.nombre }}</td>
+                    {% else %}
+                        <td bgcolor="#66FF66">Libre</td>
+                    {% endif %}
+                    {% if r.casa == "2" %}
+                        <td bgcolor="#FF6666">Ocupado por {{ r.nombre }}</td>
+                    {% else %}
+                        <td bgcolor="#66FF66">Libre</td>
+                    {% endif %}
+                    {% if r.casa == "3" %}
+                        <td bgcolor="#FF6666">Ocupado por {{ r.nombre }}</td>
+                    {% else %}
+                        <td bgcolor="#66FF66">Libre</td>
+                    {% endif %}
+                {% endfor %}
             </tr>
             {% endfor %}
         </tbody>

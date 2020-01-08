@@ -4,40 +4,22 @@ from django.core.mail import send_mail
 from .forms import AddClientForm
 from .models import Reservas
 
-import datetime
+from datetime import date, timedelta
 
-class Reserva(): # Represents a row in the table in index route
+class TableRow(): # Represents a row in the table in index route
     def __init__(self, dia):
         self.dia = dia
-
-    casa1 = False
-    nombre1 = None
-    casa2 = False
-    nombre2 = None
-    casa3 = False
-    nombre3 = None
+        
+    reservas_row = list() # List of all the reservas in that row
 
 def index(request): # TODO: Rewrite this mess, it's a disaster
     # DON'T FORGET THAT CASA IS SAVED AS A STRING IN CASE ITS NAME IS CHANGED!!!!!!!!!!!!
-    reservas = Reservas.objects.filter(fecha_inicio__lte=datetime.date.today() + datetime.timedelta(days=30)).order_by('fecha_inicio')
-    date_list = [datetime.date.today() + datetime.timedelta(days=x) for x in range(30)]
+    reservas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
+    date_list = [date.today() + timedelta(days=x) for x in range(30)]
     reservas_list = []
-    for fecha in date_list:
-        r = Reserva(dia=fecha)
-        for reserva in reservas:
-            if reserva.fecha_inicio <= fecha <= reserva.fecha_fin:
-                if reserva.casa == "1":
-                    r.casa1 = True
-                    r.nombre1 = reserva.nombre
-                elif reserva.casa == "2":
-                    r.casa2 = True
-                    r.nombre2 = reserva.nombre
-                elif reserva.casa == "3":
-                    r.casa3 = True
-                    r.nombre3 = reserva.nombre
-        reservas_list.append(r)
-
-    return render(request, 'calendarios/main.html', {'reservas':reservas_list})
+    for fecha in date_list: # TODO: See what the actual fuck to do here, it seems impossible
+        pass
+    return render(request, 'calendarios/main.html')
 
 def add_client_form(request):
     if request.method == "POST":
