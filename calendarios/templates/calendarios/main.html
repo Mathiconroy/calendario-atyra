@@ -21,24 +21,43 @@
             </tr>
         </thead>
         <tbody>
-            {% for reserva in reservas %}
+            {% for fecha in date_list %} <!-- delete the third for loop to make it work -->
             <tr>
-                <td>{{ reserva.dia }}</td>                   
-                {% if reserva.casa1 %}
+                <td>{{ fecha }}</td>
+                {% for dias_ocupados in dias_ocupados_casas %}
+                    {% for fechas in dias_ocupados %}
+                        {% if fecha in dias_ocupados.0 %}
+                            <td bgcolor="#FF6666">Ocupado por {{ dias_ocupados.1 }}</td>
+                        {% else %}
+                            <td bgcolor="#66FF66">Libre</td>
+                        {% endif %}
+                {% endfor %}
+
+                <!-- <td>{{ fecha }}</td>
+                {% for r in reservas %}
+                    {% if r.dia == fecha %}
+                        {% if r.reservado %}
+                            <td bgcolor="#FF6666">Ocupado por {{ r.nombre }}</td>
+                        {% else %}
+                            <td bgcolor="#66FF66">Libre</td>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}                  
+                {% if reserva.casa == 1 %}
                     <td bgcolor="#FF6666">Ocupado por {{ reserva.nombre1 }}</td>
                 {% else %}
                     <td bgcolor="#66FF66">Libre</td>
                 {% endif %}
-                {% if reserva.casa2 %}
+                {% if reserva.casa == 2 %}
                     <td bgcolor="#FF6666">Ocupado por {{ reserva.nombre2 }}</td>
                 {% else %}
                     <td bgcolor="#66FF66">Libre</td>
                 {% endif %}
-                {% if reserva.casa3 %}
+                {% if reserva.casa == 3 %}
                     <td bgcolor="#FF6666">Ocupado por {{ reserva.nombre3 }}</td>
                 {% else %}
                     <td bgcolor="#66FF66">Libre<td>
-                {% endif %}
+                {% endif %} -->
             </tr>
             {% endfor %}
         </tbody>

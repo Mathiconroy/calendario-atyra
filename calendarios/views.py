@@ -9,7 +9,10 @@ from datetime import date, timedelta
 class TableRow(): # Represents a row in the table in index route
     def __init__(self, dia):
         self.dia = dia
-    
+
+    reservado = False
+    nombre = False
+
     casa1 = None
     nombre1 = None
     casa2 = None
@@ -19,10 +22,10 @@ class TableRow(): # Represents a row in the table in index route
 
 def index(request): # TODO: See how to make this iterable/scalable
     # DON'T FORGET THAT CASA IS SAVED AS A STRING IN CASE ITS NAME IS CHANGED!!!!!!!!!!!!
-    reservas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
+    reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
     date_list = [date.today() + timedelta(days=x) for x in range(30)]
     reservas_list = []
-    for fecha in date_list:
+    """for fecha in date_list:
         r = TableRow(dia=fecha)
         for reserva in reservas:
             if reserva.fecha_inicio <= fecha <= reserva.fecha_fin:
@@ -35,8 +38,32 @@ def index(request): # TODO: See how to make this iterable/scalable
                 if reserva.casa == "3":
                     r.casa3 = True
                     r.nombre3 = reserva.nombre
-        reservas_list.append(r)
-    return render(request, 'calendarios/main.html', {'reservas':reservas_list})
+    for fecha in date_list:
+        if reserva_casas:
+            for reservas in reserva_casas:
+                for dia in reservas:
+                    r = TableRow(dia=fecha)
+                    if reserva.fecha_inicio <= fecha <= reserva.fecha_fin:             
+                        if reserva.casa == 1 or reserva.casa == 2 or reserva.casa == 3:
+                            r.reservado = True
+                            r.nombre = reserva.nombre
+                    reservas_list.append(r)
+                    print(len(reservas_list))
+        else:
+            for i in range(3):
+                r = TableRow(dia=fecha)
+                reservas_list.append(r)"""
+    
+    dias_ocupados_casas = [] # This one has all ocuppied days in the 3 houses
+    for reservas in reserva_casas: # reserva_casas has 3 querysets
+        dias_ocupados = []
+        for reserva in reservas: # Go through each queryset
+            for i in range(int((reserva.fecha_fin - reserva.fecha_inicio).days) + 1):
+                dias_ocupados.append((reserva.fecha_inicio + timedelta(days=i), reserva.nombre))
+        print(dias_ocupados) # Delete all things related to the tuple to make it work
+        dias_ocupados_casas.append(dias_ocupados)
+
+    return render(request, 'calendarios/main.html', {'reservas':reservas_list, 'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
 
 def add_client_form(request):
     if request.method == "POST":
