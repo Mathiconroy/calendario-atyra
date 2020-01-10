@@ -22,7 +22,7 @@
         </thead>
         <tbody>
             {% load calendariotags %}
-            {% for fecha in date_list %} <!-- delete the third for loop to make it work -->
+            {% for fecha in date_list %} <!-- render_cell is in calendariostags.py -->
             <tr>
                 <td>{{ fecha }}</td>
                 {% for dias_ocupados in dias_ocupados_casas %}

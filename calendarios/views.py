@@ -6,33 +6,20 @@ from .models import Reservas
 
 from datetime import date, timedelta
 
-class TableRow(): # Represents a row in the table in index route
-    def __init__(self, dia):
-        self.dia = dia
-
-    reservado = False
-    nombre = False
-
-    casa1 = None
-    nombre1 = None
-    casa2 = None
-    nombre2 = None
-    casa3 = None
-    nombre3 = None
-
-def index(request): # TODO: See how to make this iterable/scalable
+def index(request):
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB
     reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
     date_list = [date.today() + timedelta(days=x) for x in range(30)]
     
+    # TODO: MAYBE AND JUST MAYBE TRY TO GET RID OF DIAS_OCUPADOS_CASAS 
     dias_ocupados_casas = [] # This one has all ocuppied days in the 3 houses
     for reservas in reserva_casas: # reserva_casas has 3 querysets
-        dias_ocupados = [[], []]
+        dias_ocupados = [[], []] # The first list has the day, the second one has the Reservas instance
         for reserva in reservas: # Go through each queryset
             for i in range(int((reserva.fecha_fin - reserva.fecha_inicio).days) + 1):
                 dias_ocupados[0].append(reserva.fecha_inicio + timedelta(days=i))
-                dias_ocupados[1].append(reserva.nombre)
-        print(dias_ocupados) # Delete all things related to the tuple to make it work
+                dias_ocupados[1].append(reserva)
+        print(dias_ocupados)
         dias_ocupados_casas.append(dias_ocupados)
 
     return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
