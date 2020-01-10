@@ -21,38 +21,9 @@ class TableRow(): # Represents a row in the table in index route
     nombre3 = None
 
 def index(request): # TODO: See how to make this iterable/scalable
-    # DON'T FORGET THAT CASA IS SAVED AS A STRING IN CASE ITS NAME IS CHANGED!!!!!!!!!!!!
+    # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB
     reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
     date_list = [date.today() + timedelta(days=x) for x in range(30)]
-    reservas_list = []
-    """for fecha in date_list:
-        r = TableRow(dia=fecha)
-        for reserva in reservas:
-            if reserva.fecha_inicio <= fecha <= reserva.fecha_fin:
-                if reserva.casa == "1":
-                    r.casa1 = True
-                    r.nombre1 = reserva.nombre
-                if reserva.casa == "2":
-                    r.casa2 = True
-                    r.nombre2 = reserva.nombre
-                if reserva.casa == "3":
-                    r.casa3 = True
-                    r.nombre3 = reserva.nombre
-    for fecha in date_list:
-        if reserva_casas:
-            for reservas in reserva_casas:
-                for dia in reservas:
-                    r = TableRow(dia=fecha)
-                    if reserva.fecha_inicio <= fecha <= reserva.fecha_fin:             
-                        if reserva.casa == 1 or reserva.casa == 2 or reserva.casa == 3:
-                            r.reservado = True
-                            r.nombre = reserva.nombre
-                    reservas_list.append(r)
-                    print(len(reservas_list))
-        else:
-            for i in range(3):
-                r = TableRow(dia=fecha)
-                reservas_list.append(r)"""
     
     dias_ocupados_casas = [] # This one has all ocuppied days in the 3 houses
     for reservas in reserva_casas: # reserva_casas has 3 querysets
@@ -64,7 +35,7 @@ def index(request): # TODO: See how to make this iterable/scalable
         print(dias_ocupados) # Delete all things related to the tuple to make it work
         dias_ocupados_casas.append(dias_ocupados)
 
-    return render(request, 'calendarios/main.html', {'reservas':reservas_list, 'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
+    return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
 
 def add_client_form(request):
     if request.method == "POST":
