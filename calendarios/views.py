@@ -56,10 +56,11 @@ def index(request): # TODO: See how to make this iterable/scalable
     
     dias_ocupados_casas = [] # This one has all ocuppied days in the 3 houses
     for reservas in reserva_casas: # reserva_casas has 3 querysets
-        dias_ocupados = []
+        dias_ocupados = [[], []]
         for reserva in reservas: # Go through each queryset
             for i in range(int((reserva.fecha_fin - reserva.fecha_inicio).days) + 1):
-                dias_ocupados.append((reserva.fecha_inicio + timedelta(days=i), reserva.nombre))
+                dias_ocupados[0].append(reserva.fecha_inicio + timedelta(days=i))
+                dias_ocupados[1].append(reserva.nombre)
         print(dias_ocupados) # Delete all things related to the tuple to make it work
         dias_ocupados_casas.append(dias_ocupados)
 
