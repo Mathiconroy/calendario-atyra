@@ -7,7 +7,8 @@ from .models import Reservas
 from datetime import date, timedelta
 
 def index(request):
-    # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB
+    # TODO: Make the email stuff
+    # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
     reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
     date_list = [date.today() + timedelta(days=x) for x in range(30)]
     
@@ -19,7 +20,7 @@ def index(request):
             for i in range(int((reserva.fecha_fin - reserva.fecha_inicio).days) + 1):
                 dias_ocupados[0].append(reserva.fecha_inicio + timedelta(days=i))
                 dias_ocupados[1].append(reserva)
-        print(dias_ocupados)
+        # print(dias_ocupados) for debugging
         dias_ocupados_casas.append(dias_ocupados)
 
     return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
@@ -29,8 +30,9 @@ def add_client_form(request):
         form = AddClientForm(request.POST)
         if form.is_valid():
             form = form.clean() # This is here to validate again with my custom clean() method in forms.py
-            r = Reservas(casa=form['casa'], nombre=form['nombre'], cantidad_personas=form['cantidad_personas'],
-                        fecha_inicio=form['fecha_inicio'], fecha_fin=form['fecha_fin'], notas=form['notas'])
+            r = Reservas(casa=form['casa'], nombre=form['nombre'], email=form['email'], 
+                        cantidad_personas=form['cantidad_personas'], fecha_inicio=form['fecha_inicio'],
+                        fecha_fin=form['fecha_fin'], notas=form['notas'])
             r.save()
             return redirect('index')
 

@@ -14,6 +14,7 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by default
     notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas'}))
 
     # TODO: For some reason this doesnt work AGAIN
+    # TODO: Make sure nobody selects the 'Seleccione una casa' option (A.K.A. find a way to validate it)
     def clean(self):
         cleaned_data = super().clean()
         fecha_inicio = cleaned_data.get('fecha_inicio')
