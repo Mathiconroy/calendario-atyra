@@ -29,5 +29,7 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by default
                 raise forms.ValidationError("ERROR: Esta fecha ya fue reservada para esta casa.")
             if not ((fecha_fin - fecha_inicio) == timedelta(days=cantidad_dias)):
                 raise forms.ValidationError('ERROR: La cantidad de dias introducida no coincide con las fechas.')
+            if casa == '':
+                self.add_error('casa', 'ERROR: La casa seleccionada no es válida.')
 
         return cleaned_data

@@ -1,7 +1,6 @@
 from django.db import models
 
 class Reservas(models.Model): # THE ID FIELD IS ADDED AUTOMATICALLY
-    # TODO: Make the migrations
     id = models.IntegerField(primary_key=True)
     casa = models.IntegerField(null=False)
     nombre = models.CharField(null=False, max_length=150)
