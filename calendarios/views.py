@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
+from django.template.defaultfilters import date as _date
+from django.template.loader import render_to_string
+
 from .forms import AddClientForm
 from .models import Reservas
 
@@ -36,12 +39,12 @@ def add_client_form(request):
                         cantidad_personas=form['cantidad_personas'], fecha_inicio=form['fecha_inicio'],
                         fecha_fin=form['fecha_fin'], notas=form['notas'])
             r.save()
+            print(form['casa'])
             if form['email']: # TODO: Finish this
                 send_mail('Atyroga - Reserva hecha', 
-                            f'Buenas tardes, {form['nombre']}.'
-                            f'Su reserva se ha realizado para la casa {casas[form['casa']]}, iniciando el {form['fecha_inicio'].strftime('%A, %d de %B del %Y')}
-                            f'hasta {form['fecha_fin'].strftime('%A, %d de %B del %Y')}',
-                            from_email=)
+                            f"""Buenas tardes, {form['nombre']}.\n
+                            Su reserva se ha realizado para la casa {casas[int(form['casa'])]}, iniciando el {_date(form['fecha_inicio'])}hasta {_date(form['fecha_fin'])}""",
+                            'mathias.martinez018@gmail.com', [form['email']])
             return redirect('index')
 
     if request.method == "GET":
@@ -53,6 +56,10 @@ def view_client_form(request, id):
     reserva = Reservas.objects.get(id=id)
     return render(request, 'calendarios/view_form.html', {'reserva':reserva})
 
-def test_mail(request):
-    send_mail('Test', 'Hello, this is a test.', 'mathias.martinez018@gmail.com', recipient_list=['mathiconroy@gmail.com'])
-    return render(request, 'calendarios/test.html')
+def test_mail(request): # TODO: Make this shit LOOKUP EMAILMESSAGE CLASS
+#    send_mail('Atyroga - Reserva hecha', # Put {} for name and cantidad_personas, maybe add a way to show the final price?
+#                f"""Buenas tardes, Mathias Martinez.\n
+# Su reserva para 5 personas se ha realizado para la casa {casas[2]}, iniciando el {_date(date.today())} hasta el {_date(date.today())}.""",
+# 'mathias.martinez018@gmail.com', ['mathias.martinez018@gmail.com'], html_message=render_to_string('calendarios/mail_template.html'))
+    email = EmailMessage()
+    return render(request, 'calendarios/mail_template.html')

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block main %}
+{% load static %}
+<div class="card"> <!-- TODO: Figure this shit out -->
+    <div class="card-header">
+        <img src="http://127.0.0.1:8080{% static 'calendarios/AtyRoga_Logo.png' %}" alt="AtyRoga Logo" id="logo">
+        <div class="text-right">
+            Contacto: xxxxxxxxxx
+        </div>
+    </div>
+    <div class="card-body">
+
+    </div>
+</div>
+Buenas tardes, Mathias Martinez.\n
+Su reserva para 5 personas se ha realizado para la casa {casas[2]}, iniciando el {_date(date.today())} hasta el {_date(date.today())}
+{% endblock %}
