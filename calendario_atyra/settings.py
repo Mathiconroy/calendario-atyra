@@ -113,7 +113,7 @@ DATE_FORMAT = 'l - d/m/Y'
 
 LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Asuncion'
 
 USE_I18N = True
 
