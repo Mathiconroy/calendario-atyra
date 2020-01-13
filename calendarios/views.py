@@ -6,6 +6,8 @@ from .models import Reservas
 
 from datetime import date, timedelta
 
+casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
+
 def index(request):
     # TODO: Make the email stuff
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
@@ -34,6 +36,12 @@ def add_client_form(request):
                         cantidad_personas=form['cantidad_personas'], fecha_inicio=form['fecha_inicio'],
                         fecha_fin=form['fecha_fin'], notas=form['notas'])
             r.save()
+            if form['email']: # TODO: Finish this
+                send_mail('Atyroga - Reserva hecha', 
+                            f'Buenas tardes, {form['nombre']}.'
+                            f'Su reserva se ha realizado para la casa {casas[form['casa']]}, iniciando el {form['fecha_inicio'].strftime('%A, %d de %B del %Y')}
+                            f'hasta {form['fecha_fin'].strftime('%A, %d de %B del %Y')}',
+                            from_email=)
             return redirect('index')
 
     if request.method == "GET":
