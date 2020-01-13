@@ -1,6 +1,6 @@
 from django.db import models
 
-class Reservas(models.Model): # THE ID FIELD IS ADDED AUTOMATICALLY
+class Reservas(models.Model):
     id = models.IntegerField(primary_key=True)
     casa = models.IntegerField(null=False)
     nombre = models.CharField(null=False, max_length=150)
@@ -11,4 +11,4 @@ class Reservas(models.Model): # THE ID FIELD IS ADDED AUTOMATICALLY
     notas = models.TextField()
 
     def __str__(self):
-        return self.nombre
+        return f"{self.nombre}, Casa: {self.casa} {self.fecha_inicio.strftime('%d/%m/%Y')} - {self.fecha_fin.strftime('%d/%m/%Y')}"
