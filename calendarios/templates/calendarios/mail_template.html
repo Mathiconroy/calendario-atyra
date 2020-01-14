@@ -1,18 +1,17 @@
-{% extends "base.html" %}
+<table style="width: 100%;"> <!--<img src="cid:image1" alt="AtyRoga Logo" id="logo" style="height: 10%; width: auto;">-->
+    <tr>
+        <th style="text-align: left;"><img src="cid:image1" alt="AtyRoga Logo" id="logo" style="height: 7%; width: auto;"></th>
+        <th style="text-align: left;"></th>
+        <th style="text-align: left;"></th>
+    </tr>
+    <tr>
+        <td style="text-align: left;">Contacto: 0972300039</td>
+        <td style="text-align: center;"></td>
+        <td style="text-align: center;"></td>
+    </tr>
+</table>
+<p>Buenas, {{ form.nombre }}.</p>
+<p>
+    Su reserva para {{ form.cantidad_personas }} persona(s) se ha realizado para la casa {{ casa }}, iniciando el {{ form.fecha_inicio|date }} hasta el {{ form.fecha_fin|date }}.
+</p>
 
-{% block main %}
-{% load static %}
-<div class="card"> <!-- TODO: Figure this shit out -->
-    <div class="card-header">
-        <img src="cid:image1" alt="AtyRoga Logo" id="logo" style="height: 100px; width: auto;">
-        <div class="text-right">
-            Contacto: xxxxxxxxxx
-        </div>
-    </div>
-    <div class="card-body">
-
-    </div>
-</div>
-Buenas tardes, Mathias Martinez.\n
-Su reserva para 5 personas se ha realizado para la casa {casas[2]}, iniciando el {_date(date.today())} hasta el {_date(date.today())}
-{% endblock %}

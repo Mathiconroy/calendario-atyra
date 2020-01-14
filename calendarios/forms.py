@@ -1,6 +1,8 @@
 from django import forms
 from .models import Reservas
 
+from django.db.models import F
+
 from datetime import timedelta
 
 class AddClientForm(forms.Form): # If let blank, they are REQUIRED by default
@@ -13,18 +15,18 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by default
     cantidad_dias = forms.IntegerField(label='Cantidad de dias', min_value=0, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de dias'}))
     notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas'}))
 
-    # TODO: For some reason this doesnt work AGAIN
+    # NOTE TO SELF: PYTHON EVALUATES 0 TO FALSE AND OTHER NUMBERS TO TRUE LMAOOOOOOOOOOOO
     def clean(self):
         cleaned_data = super().clean()
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_fin = cleaned_data.get('fecha_fin')
         casa = cleaned_data.get('casa')
-        cantidad_dias = cleaned_data.get('cantidad_dias')
+        cantidad_dias = cleaned_data.get('cantidad_dias') 
 
-        if fecha_fin and fecha_inicio and cantidad_dias:
+        if (fecha_fin and fecha_inicio and cantidad_dias) or fecha_fin and fecha_inicio and cantidad_dias == 0:
             if not ((fecha_fin - fecha_inicio) >= timedelta(days=0)):
-                raise forms.ValidationError("ERROR: La fecha final es antes de la fecha inicial.")
-            if Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=casa):
+                raise forms.ValidationError("ERROR: La fecha final es antes de la fecha inicial o son iguales.")
+            if Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=int(casa)):
                 raise forms.ValidationError("ERROR: Esta fecha ya fue reservada para esta casa.")
             if not ((fecha_fin - fecha_inicio) == timedelta(days=cantidad_dias)):
                 raise forms.ValidationError('ERROR: La cantidad de dias introducida no coincide con las fechas.')

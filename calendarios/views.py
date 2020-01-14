@@ -17,13 +17,15 @@ import smtplib
 
 # Other imports
 from datetime import date, timedelta
+import os
+import sys
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
 def send_confirmation_email(form_results=None):
     msgRoot = MIMEMultipart('related')
     msgRoot['From'] = 'mathias.martinez018@gmail.com'
-    msgRoot['To'] = 'mathias.martinez018@gmail.com'
+    msgRoot['To'] = form_results['email']
     msgRoot['Subject'] = 'AtyRoga - Reserva hecha'
 
     msgAlternative = MIMEMultipart('alternative')
@@ -32,11 +34,9 @@ def send_confirmation_email(form_results=None):
     msgText = MIMEText('Su reserva se ha hecho, felicidades!')
     msgAlternative.attach(msgText)
 
-    msgText = MIMEText(render_to_string('calendarios/mail_template.html'), 'html')
+    msgText = MIMEText(render_to_string('calendarios/mail_template.html', context={'form':form_results, 'casa':casas[int(form_results['casa'])]}), 'html')
     msgAlternative.attach(msgText)
     
-    import os
-    import sys
     dir_path = os.path.dirname(os.path.realpath(__file__))
     mypngfile = os.path.join(dir_path, "AtyRogaLogo.png")
     imgFile = open(mypngfile, 'rb') # TODO: If this works, change the path
@@ -51,7 +51,7 @@ def send_confirmation_email(form_results=None):
     smtp.starttls()
     smtp.ehlo()
     smtp.login('mathias.martinez018@gmail.com', 'AsdfOwoOmg123456')
-    smtp.sendmail('mathias.martinez018@gmail.com', 'mathias.martinez018@gmail.com', msgRoot.as_string())
+    smtp.sendmail('mathias.martinez018@gmail.com', form_results['email'], msgRoot.as_string())
     smtp.quit()
 
 def index(request):
@@ -82,12 +82,8 @@ def add_client_form(request):
                         cantidad_personas=form['cantidad_personas'], fecha_inicio=form['fecha_inicio'],
                         fecha_fin=form['fecha_fin'], notas=form['notas'])
             r.save()
-            print(form['casa'])
             if form['email']: # TODO: Finish this
-                send_mail('Atyroga - Reserva hecha', 
-                            f"""Buenas tardes, {form['nombre']}.\n
-                            Su reserva se ha realizado para la casa {casas[int(form['casa'])]}, iniciando el {_date(form['fecha_inicio'])}hasta {_date(form['fecha_fin'])}""",
-                            'mathias.martinez018@gmail.com', [form['email']])
+                send_confirmation_email(form)
             return redirect('index')
 
     if request.method == "GET":
@@ -100,10 +96,5 @@ def view_client_form(request, id):
     return render(request, 'calendarios/view_form.html', {'reserva':reserva})
 
 def test_mail(request): # TODO: Make this shit LOOKUP EMAILMESSAGE CLASS
-#    send_mail('Atyroga - Reserva hecha', # Put {} for name and cantidad_personas, maybe add a way to show the final price?
-#                f"""Buenas tardes, Mathias Martinez.\n
-#Su reserva para 5 personas se ha realizado para la casa {casas[2]}, iniciando el {_date(date.today())} hasta el {_date(date.today())}.""",
-#'mathias.martinez018@gmail.com', ['mathias.martinez018@gmail.com'], html_message=render_to_string('calendarios/mail_template.html'))
-    email = EmailMessage()
     send_confirmation_email()
     return render(request, 'calendarios/mail_template.html')
