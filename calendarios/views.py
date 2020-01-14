@@ -1,15 +1,57 @@
+# Django related imports
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
 from django.core.mail import send_mail, EmailMessage
 from django.template.defaultfilters import date as _date
 from django.template.loader import render_to_string
 
+# Modules from the project imports
 from .forms import AddClientForm
 from .models import Reservas
 
+# Email related imports (not Django)
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+import smtplib
+
+# Other imports
 from datetime import date, timedelta
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
+
+def send_confirmation_email(form_results=None):
+    msgRoot = MIMEMultipart('related')
+    msgRoot['From'] = 'mathias.martinez018@gmail.com'
+    msgRoot['To'] = 'mathias.martinez018@gmail.com'
+    msgRoot['Subject'] = 'AtyRoga - Reserva hecha'
+    msgRoot.preamble = 'This is a message from AtyRoga that has the logo as a header.'
+
+    msgAlternative = MIMEMultipart('alternative')
+    msgRoot.attach(msgAlternative)
+
+    msgText = MIMEText('Su reserva se ha hecho, felicidades!')
+    msgAlternative.attach(msgText)
+
+    msgText = MIMEText('<b>Hola</b><img src="cid:image1" alt="AtyRoga Logo">', 'html')
+    msgAlternative.attach(msgText)
+    
+    import os
+    import sys
+    imgFile = open(os.path.join(sys.path[0], 'AtyRoga_Logo.png'), 'rb') # TODO: If this works, change the path
+    msgImage = MIMEImage(imgFile.read())
+    imgFile.close()
+
+    msgImage.add_header('Content-ID', '<image1>')
+    msgRoot.attach(msgImage)
+
+    smtp = smtplib.SMTP('smtp.gmail.com', 587)
+    smtp.ehlo()
+    smtp.starttls()
+    smpt.connect('smtp.gmail.com')
+    smtp.login('mathias.martinez018@gmail.com', 'AsdfOwoOmg123456')
+    smtp.sendmail('mathias.martinez018@gmail.com', 'mathias.martinez018@gmail.com', msgRoot.as_string())
+    smtp.quit()
 
 def index(request):
     # TODO: Make the email stuff
@@ -59,7 +101,8 @@ def view_client_form(request, id):
 def test_mail(request): # TODO: Make this shit LOOKUP EMAILMESSAGE CLASS
 #    send_mail('Atyroga - Reserva hecha', # Put {} for name and cantidad_personas, maybe add a way to show the final price?
 #                f"""Buenas tardes, Mathias Martinez.\n
-# Su reserva para 5 personas se ha realizado para la casa {casas[2]}, iniciando el {_date(date.today())} hasta el {_date(date.today())}.""",
-# 'mathias.martinez018@gmail.com', ['mathias.martinez018@gmail.com'], html_message=render_to_string('calendarios/mail_template.html'))
+#Su reserva para 5 personas se ha realizado para la casa {casas[2]}, iniciando el {_date(date.today())} hasta el {_date(date.today())}.""",
+#'mathias.martinez018@gmail.com', ['mathias.martinez018@gmail.com'], html_message=render_to_string('calendarios/mail_template.html'))
     email = EmailMessage()
+    send_confirmation_email()
     return render(request, 'calendarios/mail_template.html')
