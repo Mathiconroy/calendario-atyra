@@ -25,7 +25,6 @@ def send_confirmation_email(form_results=None):
     msgRoot['From'] = 'mathias.martinez018@gmail.com'
     msgRoot['To'] = 'mathias.martinez018@gmail.com'
     msgRoot['Subject'] = 'AtyRoga - Reserva hecha'
-    msgRoot.preamble = 'This is a message from AtyRoga that has the logo as a header.'
 
     msgAlternative = MIMEMultipart('alternative')
     msgRoot.attach(msgAlternative)
@@ -33,22 +32,24 @@ def send_confirmation_email(form_results=None):
     msgText = MIMEText('Su reserva se ha hecho, felicidades!')
     msgAlternative.attach(msgText)
 
-    msgText = MIMEText('<b>Hola</b><img src="cid:image1" alt="AtyRoga Logo">', 'html')
+    msgText = MIMEText(render_to_string('calendarios/mail_template.html'), 'html')
     msgAlternative.attach(msgText)
     
     import os
     import sys
-    imgFile = open(os.path.join(sys.path[0], 'AtyRoga_Logo.png'), 'rb') # TODO: If this works, change the path
-    msgImage = MIMEImage(imgFile.read())
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    mypngfile = os.path.join(dir_path, "AtyRogaLogo.png")
+    imgFile = open(mypngfile, 'rb') # TODO: If this works, change the path
+    msgImage = MIMEImage(imgFile.read()) # TODO: DONT FORGET TO CHANGE THE PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     imgFile.close()
 
     msgImage.add_header('Content-ID', '<image1>')
     msgRoot.attach(msgImage)
 
-    smtp = smtplib.SMTP('smtp.gmail.com', 587)
+    smtp = smtplib.SMTP('smtp.gmail.com:587')
     smtp.ehlo()
     smtp.starttls()
-    smpt.connect('smtp.gmail.com')
+    smtp.ehlo()
     smtp.login('mathias.martinez018@gmail.com', 'AsdfOwoOmg123456')
     smtp.sendmail('mathias.martinez018@gmail.com', 'mathias.martinez018@gmail.com', msgRoot.as_string())
     smtp.quit()
