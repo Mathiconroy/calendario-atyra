@@ -4,6 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.core.mail import send_mail, EmailMessage
 from django.template.defaultfilters import date as _date
 from django.template.loader import render_to_string
+from django.contrib.staticfiles import finders
 
 # Modules from the project imports
 from .forms import AddClientForm
@@ -22,7 +23,7 @@ import sys
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
-def send_confirmation_email(form_results=None):
+def send_confirmation_email(form_results):
     msgRoot = MIMEMultipart('related')
     msgRoot['From'] = 'mathias.martinez018@gmail.com'
     msgRoot['To'] = form_results['email']
@@ -31,15 +32,14 @@ def send_confirmation_email(form_results=None):
     msgAlternative = MIMEMultipart('alternative')
     msgRoot.attach(msgAlternative)
 
-    msgText = MIMEText('Su reserva se ha hecho, felicidades!')
+    msgText = MIMEText(f'Buenas, {form_results["nombre"]}.\nSu reserva para {form_results["cantidad_personas"]} persona(s) se ha realizado para la casa {form_results["casa"]}, iniciando el {_date(form_results["fecha_inicio"])} hasta el {_date(form_results["fecha_fin"])}.')
     msgAlternative.attach(msgText)
 
     msgText = MIMEText(render_to_string('calendarios/mail_template.html', context={'form':form_results, 'casa':casas[int(form_results['casa'])]}), 'html')
     msgAlternative.attach(msgText)
     
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    mypngfile = os.path.join(dir_path, "AtyRogaLogo.png")
-    imgFile = open(mypngfile, 'rb') # TODO: If this works, change the path
+    logo_path = finders.find('calendarios/AtyRoga_Logo.png')
+    imgFile = open(logo_path, 'rb') # TODO: If this works, change the path
     msgImage = MIMEImage(imgFile.read()) # TODO: DONT FORGET TO CHANGE THE PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     imgFile.close()
 
@@ -81,8 +81,8 @@ def add_client_form(request):
             r = Reservas(casa=form['casa'], nombre=form['nombre'], email=form['email'], 
                         cantidad_personas=form['cantidad_personas'], fecha_inicio=form['fecha_inicio'],
                         fecha_fin=form['fecha_fin'], notas=form['notas'])
-            r.save()
-            if form['email']: # TODO: Finish this
+            r.save() # Comment this to not save in the db
+            if form['email']:
                 send_confirmation_email(form)
             return redirect('index')
 
@@ -95,6 +95,6 @@ def view_client_form(request, id):
     reserva = Reservas.objects.get(id=id)
     return render(request, 'calendarios/view_form.html', {'reserva':reserva})
 
-def test_mail(request): # TODO: Make this shit LOOKUP EMAILMESSAGE CLASS
+def test_mail(request):
     send_confirmation_email()
     return render(request, 'calendarios/mail_template.html')
