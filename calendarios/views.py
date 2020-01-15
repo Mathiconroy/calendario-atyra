@@ -18,8 +18,6 @@ import smtplib
 
 # Other imports
 from datetime import date, timedelta
-import os
-import sys
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
