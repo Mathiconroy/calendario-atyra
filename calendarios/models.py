@@ -1,7 +1,7 @@
 from django.db import models
 
 class Reservas(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     casa = models.IntegerField(null=False)
     nombre = models.CharField(null=False, max_length=150)
     email = models.EmailField(null=True)
