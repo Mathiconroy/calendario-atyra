@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'db.sqlite3',
     }
 }
-# Take this in default to use the sqlite3 db
+# Put this in default to use the sqlite3 db
 # 'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',
 #        'NAME': 'db.sqlite3',
@@ -142,8 +142,7 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATICFILES_DIRS = [
-]
+STATICFILES_DIRS = []
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
