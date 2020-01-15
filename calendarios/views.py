@@ -37,8 +37,8 @@ def send_confirmation_email(form_results):
     msgAlternative.attach(msgText)
     
     logo_path = finders.find('calendarios/AtyRoga_Logo.png')
-    imgFile = open(logo_path, 'rb') # TODO: If this works, change the path
-    msgImage = MIMEImage(imgFile.read()) # TODO: DONT FORGET TO CHANGE THE PATH!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    imgFile = open(logo_path, 'rb')
+    msgImage = MIMEImage(imgFile.read())
     imgFile.close()
 
     msgImage.add_header('Content-ID', '<image1>')
@@ -53,7 +53,6 @@ def send_confirmation_email(form_results):
     smtp.quit()
 
 def index(request):
-    # TODO: Make the email stuff
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
     reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
     date_list = [date.today() + timedelta(days=x) for x in range(30)]
