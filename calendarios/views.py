@@ -79,8 +79,8 @@ def add_client_form(request):
                         cantidad_personas=form['cantidad_personas'], fecha_inicio=form['fecha_inicio'],
                         fecha_fin=form['fecha_fin'], notas=form['notas'])
             r.save() # Comment this to not save in the db
-            # if form['email']:
-            #    send_confirmation_email(form)
+            if form['email']:
+                send_confirmation_email(form)
             return redirect('index')
 
     if request.method == "GET":
