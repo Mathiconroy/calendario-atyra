@@ -7,7 +7,7 @@
     <p>Estadia: {{ reserva.fecha_inicio }} al {{ reserva.fecha_fin }}</p>
     <p>Correo: {{ resereva.email }}</p>
     <p>Notas: {{ reserva.notas }}</p>
-    <form action="/">
+    <form action="/"> <!-- TODO: Make this look good (Maybe with a table????????) -->
         <input type="submit" class="btn btn-primary" value="Volver">
     </form>
     <form action="/edit_client_form/{{ reserva.id }}">
