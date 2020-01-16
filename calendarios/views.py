@@ -30,7 +30,7 @@ def send_confirmation_email(form_results):
     msgAlternative = MIMEMultipart('alternative')
     msgRoot.attach(msgAlternative)
 
-    msgText = MIMEText(f'Buenas, {form_results["nombre"]}.\nSu reserva para {form_results["cantidad_personas"]} persona(s) se ha realizado para la casa {form_results["casa"]}, iniciando el {_date(form_results["fecha_inicio"])} hasta el {_date(form_results["fecha_fin"])}.')
+    msgText = MIMEText(f'Buenas, {form_results["nombre"]}.\nSu reserva para {form_results["cantidad_personas"]} persona(s) se ha realizado para la casa {casas[int(form_results["casa"])]}, iniciando el {_date(form_results["fecha_inicio"])} hasta el {_date(form_results["fecha_fin"])}.')
     msgAlternative.attach(msgText)
 
     msgText = MIMEText(render_to_string('calendarios/mail_template.html', context={'form':form_results, 'casa':casas[int(form_results['casa'])]}), 'html')
@@ -48,7 +48,7 @@ def send_confirmation_email(form_results):
     smtp.ehlo()
     smtp.starttls()
     smtp.ehlo()
-    smtp.login('mathias.martinez018@gmail.com', 'AsdfOwoOmg123456')
+    smtp.login('mathias.martinez018@gmail.com', 'AsdfOwoOmg123')
     smtp.sendmail('mathias.martinez018@gmail.com', form_results['email'], msgRoot.as_string())
     smtp.quit()
 
