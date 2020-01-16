@@ -2,12 +2,16 @@
 
 {% block main %}
 <div class="text-center">
-    <p>Nombre: {{ reserva.nombre }}</p>
+    <h1>Reserva de {{ reserva.nombre }}</h1>
     <p>Casa: {{ reserva.casa }}</p>
     <p>Estadia: {{ reserva.fecha_inicio }} al {{ reserva.fecha_fin }}</p>
+    <p>Correo: {{ resereva.email }}</p>
     <p>Notas: {{ reserva.notas }}</p>
     <form action="/">
         <input type="submit" class="btn btn-primary" value="Volver">
+    </form>
+    <form action="/edit_client_form/{{ reserva.id }}">
+        <input type="submit" class="btn btn-primary" value="Editar">
     </form>
 </div>
 {% endblock %}

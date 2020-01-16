@@ -53,9 +53,10 @@ def send_confirmation_email(form_results):
     smtp.quit()
 
 def index(request):
+    days_to_check_count = 120
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
-    reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=30)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
-    date_list = [date.today() + timedelta(days=x) for x in range(30)]
+    reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
+    date_list = [date.today() + timedelta(days=x) for x in range(days_to_check_count)]
     
     # TODO: MAYBE AND JUST MAYBE TRY TO GET RID OF DIAS_OCUPADOS_CASAS 
     dias_ocupados_casas = [] # This one has all ocuppied days in the 3 houses
@@ -91,6 +92,36 @@ def add_client_form(request):
 def view_client_form(request, id):
     reserva = Reservas.objects.get(id=id)
     return render(request, 'calendarios/view_form.html', {'reserva':reserva})
+
+def edit_client_form(request, id): # TODO: This clashes with the clean() method (Maybe add a bool to check if its being edited or no????????)
+    if request.method == "POST":
+        form = AddClientForm(request.POST)
+        if form.is_valid():
+            form = form.clean() # This is here to validate again with my custom clean() method in forms.py
+            r = Reservas.objects.get(id=id)
+            r.casa=form['casa']
+            r.nombre=form['nombre']
+            r.email=form['email'], 
+            r.cantidad_personas=form['cantidad_personas']
+            r.fecha_inicio=form['fecha_inicio']
+            r.fecha_fin=form['fecha_fin']
+            r.notas=form['notas']
+            r.save() # Comment this to not save in the db
+            return redirect('index')
+    
+    if request.method == "GET":
+        reserva = Reservas.objects.get(id=id)
+        form = AddClientForm(initial={
+            'casa':str(reserva.casa),
+            'nombre':reserva.nombre,
+            'email':reserva.email,
+            'cantidad_personas':reserva.cantidad_personas,
+            'fecha_inicio':reserva.fecha_inicio,
+            'fecha_fin':reserva.fecha_fin,
+            'cantidad_dias':(reserva.fecha_fin - reserva.fecha_inicio).days,
+            'notas':reserva.notas
+        })
+    return render(request, 'calendarios/edit_form.html', {'form':form})
 
 def test_mail(request):
     send_confirmation_email()
