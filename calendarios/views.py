@@ -85,7 +85,7 @@ def add_client_form(request):
             return redirect('index')
 
     if request.method == "GET":
-        form = AddClientForm()
+        form = AddClientForm(initial={'edit':False})
 
     return render(request, 'calendarios/form.html', {'form':form})
 
@@ -101,7 +101,7 @@ def edit_client_form(request, id): # TODO: This clashes with the clean() method 
             r = Reservas.objects.get(id=id)
             r.casa=form['casa']
             r.nombre=form['nombre']
-            r.email=form['email'], 
+            r.email=form['email']
             r.cantidad_personas=form['cantidad_personas']
             r.fecha_inicio=form['fecha_inicio']
             r.fecha_fin=form['fecha_fin']
@@ -112,6 +112,7 @@ def edit_client_form(request, id): # TODO: This clashes with the clean() method 
     if request.method == "GET":
         reserva = Reservas.objects.get(id=id)
         form = AddClientForm(initial={
+            'id':reserva.id,
             'casa':str(reserva.casa),
             'nombre':reserva.nombre,
             'email':reserva.email,
@@ -119,9 +120,10 @@ def edit_client_form(request, id): # TODO: This clashes with the clean() method 
             'fecha_inicio':reserva.fecha_inicio,
             'fecha_fin':reserva.fecha_fin,
             'cantidad_dias':(reserva.fecha_fin - reserva.fecha_inicio).days,
-            'notas':reserva.notas
+            'notas':reserva.notas,
+            'edit':True
         })
-    return render(request, 'calendarios/edit_form.html', {'form':form})
+    return render(request, 'calendarios/edit_form.html', {'form':form, 'id':id})
 
 def test_mail(request):
     send_confirmation_email()

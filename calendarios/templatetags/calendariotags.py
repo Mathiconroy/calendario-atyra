@@ -9,8 +9,9 @@ register = template.Library()
 @register.filter(name='render_cell')
 def render_cell(arg, value):
     if value in arg[0]:
-        return format_html("<td bgcolor='#FF6666'>Reservado por <strong><a href='/view_client_form/{}'>{}</a></strong></td>",
+        return format_html("<td bgcolor='#FF6666'>Reservado por <strong><a href='/view_client_form/{}'>{}</a></strong> ({} personas)</td>",
         arg[1][arg[0].index(value)].id,
-        arg[1][arg[0].index(value)].nombre)
+        arg[1][arg[0].index(value)].nombre,
+        arg[1][arg[0].index(value)].cantidad_personas)
     else:
         return mark_safe("<td bgcolor='#66FF66'>Libre</td>")
