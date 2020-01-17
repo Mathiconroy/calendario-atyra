@@ -21,9 +21,9 @@ from datetime import date, timedelta
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
-def send_confirmation_email(form_results):
+def send_confirmation_email(form_results): # TODO: MAKE THIS MORE SECURE. STORING THE EMAIL AND PS LIKE THIS IS EXTREMELY UNSECURE.
     msgRoot = MIMEMultipart('related')
-    msgRoot['From'] = 'mathias.martinez018@gmail.com'
+    msgRoot['From'] = 'atyrogapy@gmail.com'
     msgRoot['To'] = form_results['email']
     msgRoot['Subject'] = 'AtyRoga - Reserva hecha'
 
@@ -48,8 +48,8 @@ def send_confirmation_email(form_results):
     smtp.ehlo()
     smtp.starttls()
     smtp.ehlo()
-    smtp.login('mathias.martinez018@gmail.com', 'AsdfOwoOmg123')
-    smtp.sendmail('mathias.martinez018@gmail.com', form_results['email'], msgRoot.as_string())
+    smtp.login('atyrogapy@gmail.com', 'atyroga2019')
+    smtp.sendmail('atyrogapy@gmail.com', form_results['email'], msgRoot.as_string())
     smtp.quit()
 
 def index(request):
