@@ -18,13 +18,16 @@ import smtplib
 
 # Other imports
 from datetime import date, timedelta
+import os
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
 def send_confirmation_email(form_results): # TODO: MAKE THIS MORE SECURE. STORING THE EMAIL AND PS LIKE THIS IS EXTREMELY UNSECURE.
     msgRoot = MIMEMultipart('related')
-    msgRoot['From'] = 'atyrogapy@gmail.com'
-    msgRoot['To'] = form_results['email']
+    EMAIL_USERNAME = os.environ['EMAIL_USERNAME']
+    EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
+    msgRoot['From'] = EMAIL_USERNAME
+    msgRoot['To'] = EMAIL_PASSWORD
     msgRoot['Subject'] = 'AtyRoga - Reserva hecha'
 
     msgAlternative = MIMEMultipart('alternative')
@@ -48,8 +51,8 @@ def send_confirmation_email(form_results): # TODO: MAKE THIS MORE SECURE. STORIN
     smtp.ehlo()
     smtp.starttls()
     smtp.ehlo()
-    smtp.login('atyrogapy@gmail.com', 'atyroga2019PY')
-    smtp.sendmail('atyrogapy@gmail.com', form_results['email'], msgRoot.as_string())
+    smtp.login(EMAIL_USERNAME, EMAIL_PASSWORD)
+    smtp.sendmail(EMAIL_USERNAME, form_results['email'], msgRoot.as_string())
     smtp.quit()
 
 def index(request):
