@@ -48,7 +48,7 @@ def send_confirmation_email(form_results): # TODO: MAKE THIS MORE SECURE. STORIN
     smtp.ehlo()
     smtp.starttls()
     smtp.ehlo()
-    smtp.login('atyrogapy@gmail.com', 'atyroga2019')
+    smtp.login('atyrogapy@gmail.com', 'atyroga2019PY')
     smtp.sendmail('atyrogapy@gmail.com', form_results['email'], msgRoot.as_string())
     smtp.quit()
 
