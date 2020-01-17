@@ -38,7 +38,7 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by DEFAULT
                 # Check if fecha_fin and fecha_inicio are between a:
                 # fecha_inicio of a row
                 # fecha_fin of a row
-                # fecha_inicio and fecha_fin
+                # fecha_inicio and fecha_fin of a row
                 if (Reservas.objects.filter(fecha_inicio__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)) or
                     Reservas.objects.filter(fecha_fin__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)) or 
                     Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=int(casa))):
