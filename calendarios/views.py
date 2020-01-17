@@ -22,7 +22,7 @@ import os
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
-def send_confirmation_email(form_results): # TODO: MAKE THIS MORE SECURE. STORING THE EMAIL AND PS LIKE THIS IS EXTREMELY UNSECURE.
+def send_confirmation_email(form_results):
     msgRoot = MIMEMultipart('related')
     EMAIL_USERNAME = os.environ['EMAIL_USERNAME']
     EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
@@ -82,7 +82,7 @@ def add_client_form(request):
             r = Reservas(casa=form['casa'], nombre=form['nombre'], email=form['email'], 
                         cantidad_personas=form['cantidad_personas'], fecha_inicio=form['fecha_inicio'],
                         fecha_fin=form['fecha_fin'], notas=form['notas'])
-            r.save() # Comment this to not save in the db
+            r.save()
             if form['email']:
                 send_confirmation_email(form)
             return redirect('index')
@@ -96,7 +96,7 @@ def view_client_form(request, id):
     reserva = Reservas.objects.get(id=id)
     return render(request, 'calendarios/view_form.html', {'reserva':reserva})
 
-def edit_client_form(request, id): # TODO: This clashes with the clean() method (Maybe add a bool to check if its being edited or no????????)
+def edit_client_form(request, id):
     if request.method == "POST":
         form = AddClientForm(request.POST)
         if form.is_valid():

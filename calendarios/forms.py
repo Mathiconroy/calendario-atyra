@@ -34,12 +34,16 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by DEFAULT
                 raise forms.ValidationError('ERROR: La cantidad de dias introducida no coincide con la fecha inicial y final.')
             if casa == '':
                 self.add_error('casa', 'ERROR: La casa seleccionada no es válida.')
-            if not edit:
+            if not edit: 
+                # Check if fecha_fin and fecha_inicio are between a:
+                # fecha_inicio of a row
+                # fecha_fin of a row
+                # fecha_inicio and fecha_fin
                 if (Reservas.objects.filter(fecha_inicio__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)) or
                     Reservas.objects.filter(fecha_fin__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)) or 
                     Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=int(casa))):
                     raise forms.ValidationError("ERROR: Esta fecha ya fue reservada para esta casa.")
-            else:
+            else: # This is the same check as the last one but it excludes the entry that's being updated (so the edit doesn't clash with it)
                 if (Reservas.objects.filter(fecha_inicio__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)).exclude(id=id) or
                     Reservas.objects.filter(fecha_fin__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)).exclude(id=id) or 
                     Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=int(casa)).exclude(id=id)):
