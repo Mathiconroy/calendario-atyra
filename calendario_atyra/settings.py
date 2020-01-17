@@ -20,10 +20,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'zq$&ay#cqx&b%e_n^_0u@nhcbor8a0ci2(r)dn6+ji(!$*0-e7'
+# TODO: Maybe and just maybe rewrite this
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['calendario-atyra.herokuapp.com']
 
@@ -128,9 +129,9 @@ EMAIL_USE_TLS = True
 
 EMAIL_PORT = 587
 
-EMAIL_HOST_USER = 'mathias.martinez018@gmail.com'
+EMAIL_HOST_USER = os.environ['EMAIL_USERNAME']
 
-EMAIL_HOST_PASSWORD = 'AsdfOwoOmg123456'
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_PASSWORD']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
