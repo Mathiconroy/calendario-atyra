@@ -5,7 +5,7 @@
     <div class="text-center">
         <h1>Formulario - Editar reserva</h1>
     </div>
-    <form action="/edit_client_form/{{ id }}" method="POST"><!-- ADD INFO TO THIS! -->
+    <form action="/edit_client_form/{{ id }}" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
     <form>

@@ -5,6 +5,7 @@ from django.core.mail import send_mail, EmailMessage
 from django.template.defaultfilters import date as _date
 from django.template.loader import render_to_string
 from django.contrib.staticfiles import finders
+from django.contrib.auth.decorators import login_required # TODO: Work this
 
 # Modules from the project imports
 from .forms import AddClientForm
@@ -55,6 +56,7 @@ def send_confirmation_email(form_results):
     smtp.sendmail(EMAIL_USERNAME, form_results['email'], msgRoot.as_string())
     smtp.quit()
 
+@login_required()
 def index(request):
     days_to_check_count = 120
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
@@ -89,12 +91,12 @@ def add_client_form(request):
 
     if request.method == "GET":
         form = AddClientForm(initial={'edit':False})
-
     return render(request, 'calendarios/form.html', {'form':form})
 
 def view_client_form(request, id):
     reserva = Reservas.objects.get(id=id)
-    return render(request, 'calendarios/view_form.html', {'reserva':reserva})
+    casa = casas[int(reserva.casa)]
+    return render(request, 'calendarios/view_form.html', {'reserva':reserva, 'casa':casa})
 
 def edit_client_form(request, id):
     if request.method == "POST":
@@ -102,7 +104,7 @@ def edit_client_form(request, id):
         if form.is_valid():
             form = form.clean() # This is here to validate again with my custom clean() method in forms.py
             r = Reservas.objects.get(id=id)
-            r.casa=form['casa']
+            r.casa=int(form['casa'])
             r.nombre=form['nombre']
             r.email=form['email']
             r.cantidad_personas=form['cantidad_personas']
