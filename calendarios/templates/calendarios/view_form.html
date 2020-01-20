@@ -5,13 +5,12 @@
     <h1>Reserva de {{ reserva.nombre }}</h1>
     <p>Casa: {{ reserva.casa }}</p>
     <p>Estadia: {{ reserva.fecha_inicio }} al {{ reserva.fecha_fin }}</p>
+    <p>Cantidad de personas: {{ reserva.cantidad_personas }}</p>
     <p>Correo: {{ resereva.email }}</p>
     <p>Notas: {{ reserva.notas }}</p>
-    <form action="/"> <!-- TODO: Make this look good (Maybe with a table????????) -->
-        <input type="submit" class="btn btn-primary" value="Volver">
-    </form>
-    <form action="/edit_client_form/{{ reserva.id }}">
-        <input type="submit" class="btn btn-primary" value="Editar">
-    </form>
+    <div class="button-box">
+        <a href="/" role="button" class="btn btn-primary">Volver</a>
+        <a href="/edit_client_form/{{ reserva.id }}" role="button" class="btn btn-primary">Editar</a>
+    </div>
 </div>
 {% endblock %}

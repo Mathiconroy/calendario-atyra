@@ -24,8 +24,8 @@ casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
 def send_confirmation_email(form_results):
     msgRoot = MIMEMultipart('related')
-    EMAIL_USERNAME = os.environ['EMAIL_USERNAME']
-    EMAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
+    EMAIL_USERNAME = os.environ.get('EMAIL_USERNAME', "example@example.com")
+    EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', "myexamplepassword")
     msgRoot['From'] = EMAIL_USERNAME
     msgRoot['To'] = EMAIL_PASSWORD
     msgRoot['Subject'] = 'AtyRoga - Reserva hecha'

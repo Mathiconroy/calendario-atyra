@@ -2,16 +2,16 @@
     font-size: 14px;
 }
 
-a {
+.calendario-row-data a{
     text-decoration: underline;
     color: black;
 }
 
-a:link {
+.calendario-row-data a:link {
     color: black;
 }
 
-a:hover {
+.calendario-row-data a:hover {
     color: black;
     text-decoration: none;
 }
