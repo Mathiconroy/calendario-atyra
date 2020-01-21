@@ -6,6 +6,11 @@
 </div>
 
 <div class="px-xl-3 container-fluid">
+    <div class="text-center">
+        {% if next %}
+            <p>Necesitas iniciar sesión para ingresar a esta página.</p>
+        {% endif %}
+    </div>
     <form action="{% url 'login' %}" method="POST">
         {% csrf_token %}
         {{ form.as_p }}

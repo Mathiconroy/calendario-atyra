@@ -1,11 +1,10 @@
 # Django related imports
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponse
-from django.core.mail import send_mail, EmailMessage
 from django.template.defaultfilters import date as _date
 from django.template.loader import render_to_string
 from django.contrib.staticfiles import finders
-from django.contrib.auth.decorators import login_required # TODO: Work this
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout_then_login
 
 # Modules from the project imports
@@ -25,9 +24,12 @@ import os
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
 def send_confirmation_email(form_results):
+    EMAIL_USERNAME = os.environ.get('EMAIL_USERNAME', None)
+    EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', None)
+    if EMAIL_PASSWORD is None or EMAIL_USERNAME is None:
+        return
+        
     msgRoot = MIMEMultipart('related')
-    EMAIL_USERNAME = os.environ.get('EMAIL_USERNAME', "example@example.com")
-    EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', "myexamplepassword")
     msgRoot['From'] = EMAIL_USERNAME
     msgRoot['To'] = EMAIL_PASSWORD
     msgRoot['Subject'] = 'AtyRoga - Reserva hecha'
@@ -61,7 +63,7 @@ def send_confirmation_email(form_results):
 def index(request):
     days_to_check_count = 120
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
-    reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
+    reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(len(casas))]
     date_list = [date.today() + timedelta(days=x) for x in range(days_to_check_count)]
     
     # TODO: MAYBE AND JUST MAYBE TRY TO GET RID OF DIAS_OCUPADOS_CASAS 
@@ -107,15 +109,10 @@ def edit_client_form(request, id):
         form = AddClientForm(request.POST)
         if form.is_valid():
             form = form.clean() # This is here to validate again with my custom clean() method in forms.py
-            r = Reservas.objects.get(id=id)
-            r.casa=int(form['casa'])
-            r.nombre=form['nombre']
-            r.email=form['email']
-            r.cantidad_personas=form['cantidad_personas']
-            r.fecha_inicio=form['fecha_inicio']
-            r.fecha_fin=form['fecha_fin']
-            r.notas=form['notas']
-            r.save() # Comment this to not save in the db
+            for e in ['cantidad_dias', 'edit']:
+                form.pop(e)
+            form['casa'] = int(form['casa'])
+            r = Reservas.objects.filter(id=id).update(**form)
             return redirect('index')
     
     if request.method == "GET":
@@ -139,5 +136,5 @@ def test_mail(request):
     send_confirmation_email()
     return render(request, 'calendarios/mail_template.html')
 
-def logout(request): # TODO: Maybe add a check if the user is already logged in? What happens if the user is anonymous when entering here?
+def logout(request):
     return logout_then_login(request)

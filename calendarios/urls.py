@@ -10,7 +10,6 @@ urlpatterns = [
     path('view_client_form/<int:id>', views.view_client_form, name='view_client_form'),
     path('edit_client_form/<int:id>', views.edit_client_form, name='edit_client_form'),
     path('login/', auth_views.LoginView.as_view(template_name='calendarios/login.html', authentication_form=LoginForm), name='login'),
-    # path('logout/', auth_views.LogoutView.as_view()),
     path('logout', views.logout, name='logout'),
     path('test', views.test_mail, name='test'),
 ]
