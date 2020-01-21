@@ -1,7 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 from .models import Reservas
-
-from django.db.models import F
 
 from datetime import timedelta
 
@@ -15,7 +14,7 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by DEFAULT
     fecha_fin = forms.DateField(label='Fecha de fin', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     cantidad_dias = forms.IntegerField(label='Cantidad de dias', min_value=0, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de dias'}))
     notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas'}))
-    edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput()) # TODO: ADD THE HIDDENINPUT WIDGET!!!
+    edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput())
 
     # NOTE TO SELF: PYTHON EVALUATES 0 TO FALSE AND OTHER NUMBERS TO TRUE LMAOOOOOOOOOOOO
     def clean(self):
@@ -50,3 +49,7 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by DEFAULT
                     raise forms.ValidationError("ERROR: Esta fecha ya fue reservada para esta casa.")
 
         return cleaned_data
+
+class LoginForm(AuthenticationForm):
+    username = forms.CharField(label='Usuario', strip=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre de usuario'}))
+    password = forms.CharField(label='Contraseña', widget=forms.PasswordInput(attrs={'class':'form-control'}))

@@ -24,8 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get("SECRET_KEY", "SHITTY-DEV-KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-
+DEBUG = True
 ALLOWED_HOSTS = ['calendario-atyra.herokuapp.com']
 
 # Application definition
@@ -71,12 +70,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'calendario_atyra.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'db.sqlite3',
+    }
 }
 # Put this in default to use the sqlite3 db
 #'default': {
@@ -101,6 +102,14 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Login related settings
+
+LOGIN_URL = '/login'
+
+LOGIN_REDIRECT_URL = '/' # TODO: Ask mom cookie related questions (do I want the session to expire if the browser closses?)
+
+LOGOUT_REDIRECT_URL = '/login'
 
 # Date formatting
 
@@ -145,7 +154,7 @@ STATICFILES_DIRS = []
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 import dj_database_url 
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 # Make this a comment to use the sqlite3 db
 
 django_heroku.settings(locals())

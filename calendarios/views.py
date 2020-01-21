@@ -6,6 +6,7 @@ from django.template.defaultfilters import date as _date
 from django.template.loader import render_to_string
 from django.contrib.staticfiles import finders
 from django.contrib.auth.decorators import login_required # TODO: Work this
+from django.contrib.auth.views import logout_then_login
 
 # Modules from the project imports
 from .forms import AddClientForm
@@ -56,7 +57,7 @@ def send_confirmation_email(form_results):
     smtp.sendmail(EMAIL_USERNAME, form_results['email'], msgRoot.as_string())
     smtp.quit()
 
-@login_required()
+@login_required
 def index(request):
     days_to_check_count = 120
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
@@ -76,6 +77,7 @@ def index(request):
 
     return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
 
+@login_required
 def add_client_form(request):
     if request.method == "POST":
         form = AddClientForm(request.POST)
@@ -93,11 +95,13 @@ def add_client_form(request):
         form = AddClientForm(initial={'edit':False})
     return render(request, 'calendarios/form.html', {'form':form})
 
+@login_required
 def view_client_form(request, id):
     reserva = Reservas.objects.get(id=id)
     casa = casas[int(reserva.casa)]
     return render(request, 'calendarios/view_form.html', {'reserva':reserva, 'casa':casa})
 
+@login_required
 def edit_client_form(request, id):
     if request.method == "POST":
         form = AddClientForm(request.POST)
@@ -130,6 +134,10 @@ def edit_client_form(request, id):
         })
     return render(request, 'calendarios/edit_form.html', {'form':form, 'id':id})
 
+@login_required
 def test_mail(request):
     send_confirmation_email()
     return render(request, 'calendarios/mail_template.html')
+
+def logout(request): # TODO: Maybe add a check if the user is already logged in? What happens if the user is anonymous when entering here?
+    return logout_then_login(request)
