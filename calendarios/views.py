@@ -28,7 +28,7 @@ def send_confirmation_email(form_results):
     EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', None)
     if EMAIL_PASSWORD is None or EMAIL_USERNAME is None:
         return
-        
+
     msgRoot = MIMEMultipart('related')
     msgRoot['From'] = EMAIL_USERNAME
     msgRoot['To'] = EMAIL_PASSWORD
@@ -59,7 +59,6 @@ def send_confirmation_email(form_results):
     smtp.sendmail(EMAIL_USERNAME, form_results['email'], msgRoot.as_string())
     smtp.quit()
 
-@login_required
 def index(request):
     days_to_check_count = 120
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
