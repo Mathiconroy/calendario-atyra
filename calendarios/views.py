@@ -1,6 +1,7 @@
 # Django related imports
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest, HttpResponse
+from django.contrib import messages
 from django.template.defaultfilters import date as _date
 from django.template.loader import render_to_string
 from django.contrib.staticfiles import finders
@@ -90,6 +91,7 @@ def add_client_form(request):
             r.save()
             if form['email']:
                 send_confirmation_email(form)
+            messages.add_message(request, messages.SUCCESS, 'Reserva añadida', extra_tags="alert alert-success text-center")
             return redirect('index')
 
     if request.method == "GET":
