@@ -1,5 +1,5 @@
 # Django related imports
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpRequest, HttpResponse
 from django.template.defaultfilters import date as _date
 from django.template.loader import render_to_string
@@ -37,7 +37,7 @@ def send_confirmation_email(form_results):
     msgAlternative = MIMEMultipart('alternative')
     msgRoot.attach(msgAlternative)
 
-    msgText = MIMEText(f'Buenas, {form_results["nombre"]}.\nSu reserva para {form_results["cantidad_personas"]} persona(s) se ha realizado para la casa {casas[int(form_results["casa"])]}, iniciando el {_date(form_results["fecha_inicio"])} hasta el {_date(form_results["fecha_fin"])}.')
+    msgText = MIMEText(f'Buenas, {form_results["nombre"]}.\nSu reserva para {form_results["cantidad_personas"]} persona(s) se ha realizado para la casa {casas[int(form_results["casa"])]}, iniciando el {_date(form_results["fecha_inicio"])} hasta el {_date(form_results["fecha_fin"])}.\nGracias por la confianza.\nEste correo se ha enviado de forma automática.')
     msgAlternative.attach(msgText)
 
     msgText = MIMEText(render_to_string('calendarios/mail_template.html', context={'form':form_results, 'casa':casas[int(form_results['casa'])]}), 'html')
@@ -98,7 +98,7 @@ def add_client_form(request):
 
 @login_required
 def view_client_form(request, id):
-    reserva = Reservas.objects.get(id=id)
+    reserva = get_object_or_404(Reservas, id=id)
     casa = casas[int(reserva.casa)]
     return render(request, 'calendarios/view_form.html', {'reserva':reserva, 'casa':casa})
 
