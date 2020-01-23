@@ -1,11 +1,7 @@
 {% extends "base.html" %}
 
 {% block main %}
-{% if messages %}
-    {% for message in messages %}
-        <div {% if message.tags %} class="{{ message.tags }}"{% endif %} role="alert">{{ message }}</div>
-    {% endfor %}
-{% endif %}
+{% include 'calendarios/messages.html' with messages=messages %}
 <div class="px-xl-3 container-fluid">
     <div class="text-center">
         <h1><b>Reservas</b></h1>

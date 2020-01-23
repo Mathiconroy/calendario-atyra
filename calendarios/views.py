@@ -114,6 +114,7 @@ def edit_client_form(request, id):
                 form.pop(e)
             form['casa'] = int(form['casa'])
             r = Reservas.objects.filter(id=id).update(**form)
+            messages.add_message(request, messages.SUCCESS, 'Reserva editada', extra_tags="alert alert-success text-center")
             return redirect('index')
     
     if request.method == "GET":
