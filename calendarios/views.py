@@ -23,6 +23,7 @@ from datetime import date, timedelta
 import os
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
+precio_persona = 100000
 
 def send_confirmation_email(form_results):
     EMAIL_USERNAME = os.environ.get('EMAIL_USERNAME', None)
@@ -84,19 +85,29 @@ def add_client_form(request):
     if request.method == "POST":
         form = AddClientForm(request.POST)
         if form.is_valid():
-            form = form.clean() # This is here to validate again with my custom clean() method in forms.py
-            r = Reservas(casa=form['casa'], nombre=form['nombre'], email=form['email'], 
-                        cantidad_personas=form['cantidad_personas'], fecha_inicio=form['fecha_inicio'],
-                        fecha_fin=form['fecha_fin'], notas=form['notas'])
-            r.save()
-            if form['email']:
-                send_confirmation_email(form)
-            messages.add_message(request, messages.SUCCESS, 'Reserva añadida', extra_tags="alert alert-success text-center")
-            return redirect('index')
+            form_results = form.clean() # This is here to validate again with my custom clean() method in forms.py
+            if form_results['confirm'] == False:
+                form_results['confirm'] = True
+                form = AddClientForm(initial=form_results)
+                messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
+                if int(form_results['cantidad_personas']) >= 4:
+                    precio = precio_persona * int(form_results['cantidad_personas'])
+                else:
+                    precio = 250000
+                return render(request, 'calendarios/form.html', {'form':form, 'form_results':form_results, 'confirm':True, 'precio':precio, 'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days})
+            else:
+                r = Reservas(casa=form_results['casa'], nombre=form_results['nombre'], email=form_results['email'], 
+                            cantidad_personas=form_results['cantidad_personas'], fecha_inicio=form_results['fecha_inicio'],
+                            fecha_fin=form_results['fecha_fin'], notas=form_results['notas'])
+                r.save()
+                if form_results['email']:
+                    send_confirmation_email(form_results)
+                messages.add_message(request, messages.SUCCESS, 'Reserva añadida', extra_tags="alert alert-success text-center")
+                return redirect('index')
 
     if request.method == "GET":
         form = AddClientForm(initial={'edit':False})
-    return render(request, 'calendarios/form.html', {'form':form})
+    return render(request, 'calendarios/form.html', {'form':form, 'confirm':False})
 
 @login_required
 def view_client_form(request, id):
@@ -110,7 +121,7 @@ def edit_client_form(request, id):
         form = AddClientForm(request.POST)
         if form.is_valid():
             form = form.clean() # This is here to validate again with my custom clean() method in forms.py
-            for e in ['cantidad_dias', 'edit']:
+            for e in ['cantidad_dias', 'edit', 'confirm']: # TODO: Find a way to delete the 'cantidad_dias' and make the change here anyways, alternatively add a confirmation page and show the changes
                 form.pop(e)
             form['casa'] = int(form['casa'])
             r = Reservas.objects.filter(id=id).update(**form)

@@ -13,8 +13,9 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by DEFAULT
     fecha_inicio = forms.DateField(label='Fecha de inicio', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     fecha_fin = forms.DateField(label='Fecha de fin', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     cantidad_dias = forms.IntegerField(label='Cantidad de dias', min_value=0, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de dias'}))
-    notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas'}))
+    notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas', 'size':1}))
     edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput())
+    confirm = forms.BooleanField(label='Confirm', required=False, widget=forms.HiddenInput())
 
     # NOTE TO SELF: PYTHON EVALUATES 0 TO FALSE AND OTHER NUMBERS TO TRUE LMAOOOOOOOOOOOO
     def clean(self):
@@ -41,12 +42,12 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by DEFAULT
                 if (Reservas.objects.filter(fecha_inicio__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)) or
                     Reservas.objects.filter(fecha_fin__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)) or 
                     Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=int(casa))):
-                    raise forms.ValidationError("ERROR: Esta fecha ya fue reservada para esta casa.")
+                    raise forms.ValidationError("ERROR: El rango de fechas seleccionado no está disponible para esta casa.")
             else: # This is the same check as the last one but it excludes the entry that's being updated (so the edit doesn't clash with it)
                 if (Reservas.objects.filter(fecha_inicio__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)).exclude(id=id) or
                     Reservas.objects.filter(fecha_fin__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)).exclude(id=id) or 
                     Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=int(casa)).exclude(id=id)):
-                    raise forms.ValidationError("ERROR: Esta fecha ya fue reservada para esta casa.")
+                    raise forms.ValidationError("ERROR: El rango de fechas seleccionado no está disponible para esta casa.")
 
         return cleaned_data
 

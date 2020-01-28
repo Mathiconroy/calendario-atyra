@@ -1,17 +1,26 @@
 {% extends "base.html" %}
 
 {% block main %}
+{% include 'calendarios/messages.html' with messages=messages %}
 <div class="px-xl-3 container-fluid">
     <div class="text-center">
         <h1>Formulario - Añadir reserva</h1>
     </div>
-    <form action="/add_client_form" method="POST"><!-- ADD INFO TO THIS! -->
+    <form action="/add_client_form" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
     <form>
 
-    <div class="text-center">
-        <button type="submit" class="btn btn-primary">Enviar</button>
-    </div>
+    {% if confirm %}
+        <div class="text-center">
+            <p>La reserva será desde el {{ form_results.fecha_inicio }} al {{ form_results.fecha_fin }} con una duración de {{ reserva_length }} días y un precio de {{ precio }} guaraníes.</p>
+            <strong><p>Presione el siguiente botón para confirmar que estos datos son correctos y guardar la reserva. Si cambia los datos introducidos, se guardarán esos.</p></strong>
+            <button type="submit" class="btn btn-primary">Confirmar</button>
+        </div>
+    {% else %}
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
