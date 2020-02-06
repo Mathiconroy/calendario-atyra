@@ -3,7 +3,7 @@ from django.utils.safestring import mark_safe, SafeString
 from django.utils.html import format_html
 from django.template.defaultfilters import date as _date
 
-from ..views import not_used_fields, casas 
+from ..views import casas 
 
 register = template.Library()
 
