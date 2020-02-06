@@ -8,14 +8,26 @@
     </div>
     <form action="/add_client_form" method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+        {% load calendariotags %}
+        {% if form_results %}
+            <div hidden>{{ form.as_p }}</div>
+            <div class='text-center'>
+                {% for result in form_results %}
+                    <!-- Not render the form because it's already been submitted. Render results instead. -->
+                    <p>{% render_confirm form_results result %}</p>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ form.as_p }}
+        {% endif %}
     <form>
 
     {% if confirm %}
         <div class="text-center">
-            <p>La reserva será desde el {{ form_results.fecha_inicio }} al {{ form_results.fecha_fin }} con una duración de {{ reserva_length }} días y un precio de {{ precio }} guaraníes.</p>
-            <strong><p>Presione el siguiente botón para confirmar que estos datos son correctos y guardar la reserva. Si cambia los datos introducidos, se guardarán esos.</p></strong>
+            <p>Precio: {{ precio }} guaraníes.</p>
+            <strong><p>Presione el siguiente botón para confirmar que estos datos son correctos y guardar la reserva.</p></strong>
             <button type="submit" class="btn btn-primary">Confirmar</button>
+            <a href="/add_client_form" role="button" class="btn btn-primary">Volver</a>
         </div>
     {% else %}
         <div class="text-center">

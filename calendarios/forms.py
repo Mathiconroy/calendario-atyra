@@ -12,7 +12,7 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by DEFAULT
     cantidad_personas = forms.IntegerField(label='Cantidad de personas', min_value=1, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de personas'}))
     fecha_inicio = forms.DateField(label='Fecha de inicio', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     fecha_fin = forms.DateField(label='Fecha de fin', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
-    cantidad_dias = forms.IntegerField(label='Cantidad de dias', min_value=0, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de dias'}))
+    # cantidad_dias = forms.IntegerField(label='Cantidad de dias', min_value=0, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de dias'}))
     notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas', 'size':1}))
     edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput())
     confirm = forms.BooleanField(label='Confirm', required=False, widget=forms.HiddenInput())
@@ -23,15 +23,12 @@ class AddClientForm(forms.Form): # If let blank, they are REQUIRED by DEFAULT
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_fin = cleaned_data.get('fecha_fin')
         casa = cleaned_data.get('casa')
-        cantidad_dias = cleaned_data.get('cantidad_dias')
         edit = cleaned_data.get('edit')
         id = cleaned_data.get('id')
 
-        if (fecha_fin and fecha_inicio and cantidad_dias) or (fecha_fin and fecha_inicio and cantidad_dias == 0):
+        if fecha_fin and fecha_inicio:
             if not ((fecha_fin - fecha_inicio) >= timedelta(days=0)):
                 raise forms.ValidationError("ERROR: La fecha final es antes de la fecha inicial.")
-            if not ((fecha_fin - fecha_inicio) == timedelta(days=cantidad_dias)):
-                raise forms.ValidationError('ERROR: La cantidad de dias introducida no coincide con la fecha inicial y final.')
             if casa == '':
                 self.add_error('casa', 'ERROR: La casa seleccionada no es válida.')
             if not edit: 

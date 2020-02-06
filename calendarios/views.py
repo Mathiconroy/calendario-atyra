@@ -23,9 +23,25 @@ from datetime import date, timedelta
 import os
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
-precio_persona = 100000
+
+def calculate_price(cantidad_personas):
+    """ Returns the price based on the ammount of people given."""
+    precio_persona = 100000
+    precio_minimo = 250000
+    if cantidad_personas >= 4:
+        precio = precio_minimo + precio_persona * (cantidad_personas - 2)
+    else:
+        precio = precio_minimo
+    return f'{precio:,}'
+
+def remove_not_used_fields(all_fields):
+    """Removes all unused fields from a dictionary with all the form fields."""
+    not_used_fields = ("id", "edit", "confirm")
+    for e in not_used_fields:
+        all_fields.pop(e)
 
 def send_confirmation_email(form_results):
+    """Given the dictionary of the results of a form, it sends an email with all the data."""
     EMAIL_USERNAME = os.environ.get('EMAIL_USERNAME', None)
     EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', None)
     if EMAIL_PASSWORD is None or EMAIL_USERNAME is None:
@@ -86,14 +102,27 @@ def add_client_form(request):
         form = AddClientForm(request.POST)
         if form.is_valid():
             form_results = form.clean() # This is here to validate again with my custom clean() method in forms.py
+            print(form_results)
+            print(form_results['confirm']) # Prints false
             if form_results['confirm'] == False:
                 form_results['confirm'] = True
-                form = AddClientForm(initial=form_results)
+                print(form_results)
+                form = AddClientForm(initial={
+                    'nombre': form_results['nombre'],
+                    'casa': form_results['casa'],
+                    'email': form_results['email'],
+                    'cantidad_personas': form_results['cantidad_personas'],
+                    'fecha_inicio': form_results['fecha_inicio'],
+                    'fecha_fin': form_results['fecha_fin'],
+                    'notas': form_results['notas'],
+                    'edit': form_results['edit'],
+                    'confirm': form_results['confirm']
+                }) # If defining the dictionary it works for some reason???
+                # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE
                 messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
-                if int(form_results['cantidad_personas']) >= 4:
-                    precio = precio_persona * int(form_results['cantidad_personas'])
-                else:
-                    precio = 250000
+                precio = calculate_price(int(form_results['cantidad_personas']))
+                print('Before rendering', form_results['confirm']) # Prints true
+                remove_not_used_fields(form_results)        
                 return render(request, 'calendarios/form.html', {'form':form, 'form_results':form_results, 'confirm':True, 'precio':precio, 'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days})
             else:
                 r = Reservas(casa=form_results['casa'], nombre=form_results['nombre'], email=form_results['email'], 
@@ -121,8 +150,7 @@ def edit_client_form(request, id):
         form = AddClientForm(request.POST)
         if form.is_valid():
             form = form.clean() # This is here to validate again with my custom clean() method in forms.py
-            for e in ['cantidad_dias', 'edit', 'confirm']: # TODO: Find a way to delete the 'cantidad_dias' and make the change here anyways, alternatively add a confirmation page and show the changes
-                form.pop(e)
+            remove_not_used_fields(form)
             form['casa'] = int(form['casa'])
             r = Reservas.objects.filter(id=id).update(**form)
             messages.add_message(request, messages.SUCCESS, 'Reserva editada', extra_tags="alert alert-success text-center")
@@ -138,7 +166,6 @@ def edit_client_form(request, id):
             'cantidad_personas':reserva.cantidad_personas,
             'fecha_inicio':reserva.fecha_inicio,
             'fecha_fin':reserva.fecha_fin,
-            'cantidad_dias':(reserva.fecha_fin - reserva.fecha_inicio).days,
             'notas':reserva.notas,
             'edit':True
         })
