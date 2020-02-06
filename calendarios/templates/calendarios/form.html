@@ -25,9 +25,9 @@
     {% if confirm %}
         <div class="text-center">
             <p>Precio: {{ precio }} guaraníes.</p>
-            <strong><p>Presione el siguiente botón para confirmar que estos datos son correctos y guardar la reserva.</p></strong>
-            <button type="submit" class="btn btn-primary">Confirmar</button>
-            <a href="/add_client_form" role="button" class="btn btn-primary">Volver</a>
+            <p><strong>La reserva durará {{ reserva_length }} dia(s).</strong></p>
+            <a href="/add_client_form" role="button" class="btn btn-primary add_left">Volver al formulario</a>
+            <button type="submit" class="btn btn-primary">Confirmar la reserva</button>
         </div>
     {% else %}
         <div class="text-center">

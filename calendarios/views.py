@@ -136,6 +136,7 @@ def add_client_form(request):
 
     if request.method == "GET":
         form = AddClientForm(initial={'edit':False})
+        
     return render(request, 'calendarios/form.html', {'form':form, 'confirm':False})
 
 @login_required

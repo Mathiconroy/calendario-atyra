@@ -2,6 +2,10 @@
     font-size: 14px;
 }
 
+.add_left{
+    margin-right: 5%;
+}
+
 .calendario-row-data a {
     text-decoration: underline;
     color: black;

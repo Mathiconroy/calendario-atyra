@@ -9,8 +9,8 @@
     <p>Correo: {{ resereva.email }}</p>
     <p>Notas: {{ reserva.notas }}</p>
     <div class="button-box">
-        <a href="/" role="button" class="btn btn-primary">Volver</a>
-        <a href="/edit_client_form/{{ reserva.id }}" role="button" class="btn btn-primary">Editar</a>
+        <a href="/" role="button" class="btn btn-primary add_left">Volver a la página principal</a>
+        <a href="/edit_client_form/{{ reserva.id }}" role="button" class="btn btn-primary">Editar esta reserva</a>
     </div>
 </div>
 {% endblock %}
