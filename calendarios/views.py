@@ -80,9 +80,12 @@ def send_confirmation_email(form_results):
 def index(request):
     days_to_check_count = 120
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
-    reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(len(casas))]
+    # reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
+    reserva_casas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
+    print('QUERYSET:', reserva_casas)
     date_list = [date.today() + timedelta(days=x) for x in range(days_to_check_count)]
     
+    """
     # TODO: MAYBE AND JUST MAYBE TRY TO GET RID OF DIAS_OCUPADOS_CASAS 
     dias_ocupados_casas = [] # This one has all ocuppied days in the 3 houses
     for reservas in reserva_casas: # reserva_casas has 3 querysets
@@ -93,6 +96,27 @@ def index(request):
                 dias_ocupados[1].append(reserva)
         # print(dias_ocupados) for debugging
         dias_ocupados_casas.append(dias_ocupados)
+    print('Old', dias_ocupados_casas)
+
+    dias_ocupados_casas = [] # This one has all ocuppied days in the 3 houses
+    for reservas in reserva_casas: # reserva_casas has 3 querysets
+        for reserva in reservas: # Go through each queryset
+            for i in range(int((reserva.fecha_fin - reserva.fecha_inicio).days) + 1):
+                dias_ocupados_casas.append((reserva.fecha_inicio + timedelta(days=i), reserva))
+        # print(dias_ocupados) for debugging
+    print('New', dias_ocupados_casas)
+    """
+    dias_ocupados_casas = {} # This one has all ocuppied days in the 3 houses
+    for day in date_list:
+        dias_ocupados_casas.update({day: [None, None, None]})
+        for reserva in reserva_casas:
+            if reserva.fecha_inicio <= day <= reserva.fecha_fin:
+                dias_ocupados_casas[day][reserva.casa - 1] = reserva
+
+    print('FECHAS:', date_list)
+    print('DICCIONARIO:', dias_ocupados_casas)
+
+    return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
 
     return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
 
