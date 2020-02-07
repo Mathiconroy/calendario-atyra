@@ -82,7 +82,6 @@ def index(request):
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
     # reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
     reserva_casas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
-    print('QUERYSET:', reserva_casas)
     date_list = [date.today() + timedelta(days=x) for x in range(days_to_check_count)]
     
     """
@@ -106,19 +105,14 @@ def index(request):
         # print(dias_ocupados) for debugging
     print('New', dias_ocupados_casas)
     """
-    dias_ocupados_casas = {} # This one has all ocuppied days in the 3 houses
+    dias_ocupados = {}
     for day in date_list:
-        dias_ocupados_casas.update({day: [None, None, None]})
+        dias_ocupados.update({day: [None, None, None]})
         for reserva in reserva_casas:
             if reserva.fecha_inicio <= day <= reserva.fecha_fin:
-                dias_ocupados_casas[day][reserva.casa - 1] = reserva
+                dias_ocupados[day][reserva.casa - 1] = reserva
 
-    print('FECHAS:', date_list)
-    print('DICCIONARIO:', dias_ocupados_casas)
-
-    return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
-
-    return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados_casas':dias_ocupados_casas})
+    return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados':dias_ocupados})
 
 @login_required
 def add_client_form(request):
