@@ -54,4 +54,4 @@ def render_confirm(dictionary, key): # The dictionary contains submitted Reserva
     elif key == "fecha_fin" or key == "fecha_inicio":
         return f"{correct_names_dict[key]}: {_date(dictionary.get(key))}"
     else:
-        return mark_safe("<td bgcolor='#66FF66'>Libre</td>")
+        return f"{correct_names_dict[key]}: {dictionary.get(key)}"
