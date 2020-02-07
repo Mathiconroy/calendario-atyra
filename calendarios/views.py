@@ -123,7 +123,13 @@ def add_client_form(request):
                 precio = calculate_price(int(form_results['cantidad_personas']))
                 print('Before rendering', form_results['confirm']) # Prints true
                 remove_not_used_fields(form_results)        
-                return render(request, 'calendarios/form.html', {'form':form, 'form_results':form_results, 'confirm':True, 'precio':precio, 'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days})
+                return render(request, 'calendarios/form.html', {
+                    'form':form,
+                    'form_results':form_results, 
+                    'confirm':True, 
+                    'precio':precio, 
+                    'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days
+                })
             else:
                 r = Reservas(casa=form_results['casa'], nombre=form_results['nombre'], email=form_results['email'], 
                             cantidad_personas=form_results['cantidad_personas'], fecha_inicio=form_results['fecha_inicio'],
