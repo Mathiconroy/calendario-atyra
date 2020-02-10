@@ -12,8 +12,8 @@
         {% if form_results %}
             <div hidden>{{ form.as_p }}</div>
             <div class='text-center'>
+                <!-- Not render the form because it's already been submitted. Render results instead. -->
                 {% for result in form_results %}
-                    <!-- Not render the form because it's already been submitted. Render results instead. -->
                     <p>{% render_confirm form_results result %}</p>
                 {% endfor %}
             </div>
@@ -26,6 +26,9 @@
         <div class="text-center">
             <p>Precio: {{ precio }} guaraníes.</p>
             <p><strong>La reserva durará {{ reserva_length }} dia(s).</strong></p>
+            {% if form_results.email %}
+                <p><strong>Se enviará un email de confirmación.</strong></p>
+            {% endif %}
             <a href="/add_client_form" role="button" class="btn btn-primary add_left">Volver al formulario</a>
             <button type="submit" class="btn btn-primary">Confirmar la reserva</button>
         </div>
