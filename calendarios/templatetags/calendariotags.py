@@ -7,10 +7,11 @@ from ..views import casas
 
 register = template.Library()
 
-# arg is a list which contains two lists: the first one has all days ocuppied, the second one has an instance of RESERVAS
-# value is the current date we are iterating
-@register.simple_tag(takes_context=True, name='render_cell')
-def render_cell(context, dictionary, fecha):
+# Dictionary is a dictionary that has as keys a date object and as values a list with Reserva object or None
+# fecha is the date object we currently are (goes from today up to x days after, depending on what the value of days_to_count in views.py is)
+@register.simple_tag(takes_context=True, name='render_row')
+def render_row(context, dictionary, fecha):
+    """Look up the dictionary with the given date and make a string of html to render the table row"""
     request = context['request']
     #print('fecha', fecha, 'dictionary', dictionary[fecha])
     table_row = '' # Construct a string with the html for the table row

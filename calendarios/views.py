@@ -136,7 +136,7 @@ def add_client_form(request):
                     'edit': form_results['edit'],
                     'confirm': form_results['confirm']
                 }) # If defining the dictionary it works for some reason???
-                # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE
+                # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE IF DOUNT INITIAL=FORM_RESULTS
                 messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
                 precio = calculate_price(int(form_results['cantidad_personas']))
                 print('Before rendering', form_results['confirm']) # Prints true

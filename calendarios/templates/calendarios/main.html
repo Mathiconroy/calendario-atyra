@@ -4,7 +4,7 @@
 {% include 'calendarios/messages.html' with messages=messages %}
 <div class="px-xl-3 container-fluid">
     <div class="text-center">
-        <h1><b>Reservas</b></h1>
+        <h1><b>Reservas Aty Roga</b></h1>
         {% if user.is_authenticated %}
             <a role="button" href="{% url 'add_client_form' %}" class="btn btn-primary">Añadir reserva</a>
             <a role="button" href="{% url 'logout' %}" class="btn btn-primary">Cerrar sesión</a>
@@ -34,7 +34,7 @@
             {% for fecha in date_list %} <!-- render_cell is in calendariostags.py -->
             <tr>
                 <td>{{ fecha }}</td>
-                {% render_cell dias_ocupados fecha %} <!-- dias_ocupados-->
+                {% render_row dias_ocupados fecha %} <!-- dias_ocupados is a dictionary and fecha is date object -->
             </tr>
             {% endfor %}
         </tbody>
