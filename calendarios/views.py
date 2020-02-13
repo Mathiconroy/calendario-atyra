@@ -24,8 +24,23 @@ import os
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
+def generate_cells(date_list, reservas):
+    """
+        date_list: A list of dates to render
+        reservas: A QuerySet with all the reservas in the range of date_list
+        returns: A dictionary with the date as the key and a list with 3 elements 
+                    representing each cell in a line for the table (having None == No reservations for that house)
+    """
+    dias_ocupados = {}
+    for day in date_list:
+        dias_ocupados.update({day: [None, None, None]})
+        for reserva in reservas:
+            if reserva.fecha_inicio <= day <= reserva.fecha_fin:
+                dias_ocupados[day][reserva.casa - 1] = reserva
+    return dias_ocupados
+
 def calculate_price(cantidad_personas):
-    """ Returns the price based on the ammount of people given."""
+    """Returns the price based on the ammount of people given."""
     precio_persona = 100000
     precio_minimo = 250000
     if cantidad_personas >= 4:
@@ -81,7 +96,7 @@ def index(request):
     days_to_check_count = 120
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
     # reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
-    reserva_casas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
+    reservas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
     date_list = [date.today() + timedelta(days=x) for x in range(days_to_check_count)]
     
     """
@@ -105,14 +120,9 @@ def index(request):
         # print(dias_ocupados) for debugging
     print('New', dias_ocupados_casas)
     """
-    dias_ocupados = {}
-    for day in date_list:
-        dias_ocupados.update({day: [None, None, None]})
-        for reserva in reserva_casas:
-            if reserva.fecha_inicio <= day <= reserva.fecha_fin:
-                dias_ocupados[day][reserva.casa - 1] = reserva
+    dias_ocupados_dict = generate_cells(date_list, reservas)
 
-    return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados':dias_ocupados})
+    return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados':dias_ocupados_dict})
 
 @login_required
 def add_client_form(request):
