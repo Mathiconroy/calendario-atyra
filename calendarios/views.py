@@ -24,7 +24,7 @@ import os
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
 
-def generate_cells(date_list, reservas):
+def generate_rows(date_list, reservas):
     """
         date_list: A list of dates to render
         reservas: A QuerySet with all the reservas in the range of date_list
@@ -120,7 +120,7 @@ def index(request):
         # print(dias_ocupados) for debugging
     print('New', dias_ocupados_casas)
     """
-    dias_ocupados_dict = generate_cells(date_list, reservas)
+    dias_ocupados_dict = generate_rows(date_list, reservas)
 
     return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados':dias_ocupados_dict})
 
@@ -146,7 +146,7 @@ def add_client_form(request):
                     'edit': form_results['edit'],
                     'confirm': form_results['confirm']
                 }) # If defining the dictionary it works for some reason???
-                # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE IF DOUNT INITIAL=FORM_RESULTS
+                # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE IF I DO INITIAL=FORM_RESULTS
                 messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
                 precio = calculate_price(int(form_results['cantidad_personas']))
                 print('Before rendering', form_results['confirm']) # Prints true
