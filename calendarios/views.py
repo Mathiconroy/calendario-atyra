@@ -42,7 +42,7 @@ def generate_rows(date_list, reservas):
 def calculate_price(cantidad_personas):
     """Returns the price based on the ammount of people given."""
     precio_persona = 100000
-    precio_minimo = 250000
+    precio_minimo = 350000
     if cantidad_personas >= 4:
         precio = precio_minimo + precio_persona * (cantidad_personas - 2)
     else:
@@ -130,8 +130,6 @@ def add_client_form(request):
         form = AddClientForm(request.POST)
         if form.is_valid():
             form_results = form.clean() # This is here to validate again with my custom clean() method in forms.py
-            print(form_results)
-            print(form_results['confirm']) # Prints false
             if form_results['confirm'] == False:
                 form_results['confirm'] = True
                 print(form_results)
@@ -149,7 +147,6 @@ def add_client_form(request):
                 # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE IF I DO INITIAL=FORM_RESULTS
                 messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
                 precio = calculate_price(int(form_results['cantidad_personas']))
-                print('Before rendering', form_results['confirm']) # Prints true
                 remove_not_used_fields(form_results)        
                 return render(request, 'calendarios/form.html', {
                     'form':form,
