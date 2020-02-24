@@ -14,7 +14,7 @@ def render_row(context, dictionary, fecha):
     """Look up the dictionary with the given date and make a string of html to render the table row"""
     request = context['request']
     #print('fecha', fecha, 'dictionary', dictionary[fecha])
-    table_row = '' # Construct a string with the html for the table row
+    table_row = ''
     for reserva in dictionary[fecha]:
         if reserva:
             table_row = table_row + format_html("<td class='calendario-row-data' bgcolor='#FF6666'>Reservado por <strong><a href='/view_client_form/{}'>{}</a></strong> ({} personas)</td>",
