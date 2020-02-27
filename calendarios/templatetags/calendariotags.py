@@ -26,19 +26,6 @@ def render_row(context, dictionary, fecha):
 
     return mark_safe(table_row)
 
-    """
-    if value == arg[0]:
-        if request.user.is_authenticated:
-            return format_html("<td class='calendario-row-data' bgcolor='#FF6666'>Reservado por <strong><a href='/view_client_form/{}'>{}</a></strong> ({} personas)</td>",
-            arg[1].id,
-            arg[1].nombre,
-            arg[1].cantidad_personas)
-        else:
-            return format_html("<td class='calendario-row-data' bgcolor='#FF6666'>Reservado</td>")
-    else:
-        return mark_safe("<td bgcolor='#66FF66'>Libre</td>")
-    """
-
 @register.simple_tag(name='render_confirm')
 def render_confirm(dictionary, key): # The dictionary contains submitted ReservaForm values
     correct_names_dict = {
