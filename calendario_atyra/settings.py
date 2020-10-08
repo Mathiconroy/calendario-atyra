@@ -156,6 +156,6 @@ STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 import dj_database_url 
 # DATABASES['default'] = dj_database_url.config(conn_max_age=600)
-# Make this a comment to use the sqlite3 db and add decoment the setting in DATABASES
+# Make this a comment to use the sqlite3 db and decomment the setting in DATABASES
 
 django_heroku.settings(locals())

@@ -38,4 +38,24 @@
         </div>
     {% endif %}
 </div>
+<script>
+    var casilla_precio = document.querySelector('#id_precio');
+    var casilla_adultos = document.querySelector('#id_cantidad_adultos');
+    var casilla_menores = document.querySelector('#id_cantidad_menores');
+    var casilla_gratis = document.querySelector('#id_cantidad_gratis');
+    var precio_adultos = 150000;
+    var precio_menores = 120000;
+    var precio_minimo = 450000;
+    function update_precio() {
+        var total = Number(casilla_adultos.value) * precio_adultos + Number(casilla_menores.value) * precio_menores;
+        if (total >= precio_minimo) {
+            casilla_precio.value = total;
+        }
+        else {
+            casilla_precio.value = precio_minimo;
+        }
+    }
+    casilla_adultos.addEventListener('change', update_precio);
+    casilla_menores.addEventListener('change', update_precio);
+</script>
 {% endblock %}

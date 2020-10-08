@@ -39,12 +39,14 @@ def generate_rows(date_list, reservas):
                 dias_ocupados[day][reserva.casa - 1] = reserva
     return dias_ocupados
 
-def calculate_price(cantidad_personas):
+def calculate_price(cantidad_adultos, cantidad_menores):
     """Returns the price based on the ammount of people given."""
-    precio_persona = 100000
-    precio_minimo = 350000
-    if cantidad_personas >= 4:
-        precio = precio_minimo + precio_persona * (cantidad_personas - 2)
+    precio_adultos = 150000
+    precio_menores = 120000
+    precio_minimo = 450000
+    total = cantidad_adultos * precio_adultos + cantidad_menores * precio_menores
+    if total >= precio_minimo:
+        precio = total
     else:
         precio = precio_minimo
     return f'{precio:,}'
@@ -137,7 +139,7 @@ def add_client_form(request):
                     'nombre': form_results['nombre'],
                     'casa': form_results['casa'],
                     'email': form_results['email'],
-                    'cantidad_personas': form_results['cantidad_personas'],
+                    'cantidad_adultos': form_results['cantidad_adultos'],
                     'fecha_inicio': form_results['fecha_inicio'],
                     'fecha_fin': form_results['fecha_fin'],
                     'notas': form_results['notas'],
@@ -146,7 +148,7 @@ def add_client_form(request):
                 }) # If defining the dictionary it works for some reason???
                 # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE IF I DO INITIAL=FORM_RESULTS
                 messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
-                precio = calculate_price(int(form_results['cantidad_personas']))
+                precio = calculate_price(int(form_results['cantidad_adultos']), int(form_results['cantidad_menores']))
                 remove_not_used_fields(form_results)        
                 return render(request, 'calendarios/form.html', {
                     'form':form,

@@ -4,26 +4,36 @@ from .models import Reservas
 
 from datetime import timedelta
 
+precio_adultos = 150000
+precio_menores = 120000
+
 class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
     id = forms.IntegerField(required=False, label='ID', widget=forms.HiddenInput())
     casa = forms.ChoiceField(label='Casa', choices=[('', 'Seleccione una casa'), (1, 'Barro Roga'), (2, 'Ysypo Roga'), (3, 'Hierro Roga')], widget=forms.Select(attrs={'class':'form-control'}))
     nombre = forms.CharField(label='Nombre', max_length=150, strip=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre del cliente'}))
     email = forms.EmailField(required=False, label='Email', widget=forms.EmailInput(attrs={'class':'form-control', 'placeholder':'Email del cliente'}))
-    cantidad_personas = forms.IntegerField(label='Cantidad de personas', min_value=1, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de personas'}))
+    cantidad_adultos = forms.IntegerField(label='Cantidad de adultos (a partir de 13 años)', initial=0, min_value=1, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de adultos'}))
+    cantidad_menores = forms.IntegerField(label='Cantidad de niños (entre 2 a 12 años)', initial=0, min_value=0, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de niños'}))
+    cantidad_gratis = forms.IntegerField(label='Cantidad de menores de 23 meses', initial=0, min_value=0, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de menores de 18 meses'}))
     fecha_inicio = forms.DateField(label='Fecha de inicio', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     fecha_fin = forms.DateField(label='Fecha de fin', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas', 'size':1}))
     edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput())
     confirm = forms.BooleanField(label='Confirm', required=False, widget=forms.HiddenInput())
+    precio = forms.IntegerField(required=True, label='Precio', widget=forms.NumberInput(attrs={'class':'form-control'}))
 
     # NOTE TO SELF: PYTHON EVALUATES 0 TO FALSE AND OTHER NUMBERS TO TRUE LMAOOOOOOOOOOOO
     def clean(self):
         cleaned_data = super().clean()
+        casilla_precio = cleaned_data.get('precio')
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_fin = cleaned_data.get('fecha_fin')
         casa = cleaned_data.get('casa')
         edit = cleaned_data.get('edit')
         id = cleaned_data.get('id')
+        cantidad_adultos = cleaned_data.get('cantidad_adultos')
+        cantidad_menores = cleaned_data.get('cantidad_menores')
+        cantidad_gratis = cleaned_data.get('cantidad_gratis')
 
         if fecha_fin and fecha_inicio:
             if not ((fecha_fin - fecha_inicio) >= timedelta(days=0)):
@@ -44,6 +54,12 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
                     Reservas.objects.filter(fecha_fin__range=(fecha_inicio, fecha_fin)).filter(casa=int(casa)).exclude(id=id) or 
                     Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=int(casa)).exclude(id=id)):
                     raise forms.ValidationError("ERROR: El rango de fechas seleccionado no está disponible para esta casa.")
+        
+        if cantidad_adultos + cantidad_menores + cantidad_gratis <= 0 or cantidad_adultos + cantidad_menores + cantidad_gratis > 10:
+            raise forms.ValidationError('ERROR: La cantidad de personas es invalida.')
+
+        if (cantidad_adultos * precio_adultos + cantidad_menores * precio_menores != casilla_precio):
+            raise forms.ValidationError('ERROR: El precio no coincide con las cantidades introducidas.')
 
         return cleaned_data
 
