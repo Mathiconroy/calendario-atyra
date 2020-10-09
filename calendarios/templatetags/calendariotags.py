@@ -20,7 +20,7 @@ def render_row(context, dictionary, fecha):
             table_row = table_row + format_html("<td class='calendario-row-data' bgcolor='#FF6666'>Reservado por <strong><a href='/view_client_form/{}'>{}</a></strong> ({} personas)</td>",
                 reserva.id,
                 reserva.nombre,
-                reserva.cantidad_personas)
+                reserva.cantidad_adultos + reserva.cantidad_menores + reserva.cantidad_gratis)
         else:
             table_row = table_row + format_html("<td bgcolor='#66FF66'>Libre</td>")
 
@@ -34,9 +34,12 @@ def render_confirm(dictionary, key): # The dictionary contains submitted Reserva
         "email":"Email",
         "nombre":"Nombre",
         "casa":"Casa",
-        "cantidad_personas":"Cantidad de personas",
+        "cantidad_adultos":"Cantidad de adultos",
+        'cantidad_menores':'Cantidad de menores',
+        'cantidad_gratis':'Cantidad de gratis',
         "notas":"Notas",
-    }   
+    }
+    print(dictionary, key)
     if key == "casa":
         return f"{correct_names_dict[key]}: {casas.get(int(dictionary.get(key)))}"
     elif key == "fecha_fin" or key == "fecha_inicio":

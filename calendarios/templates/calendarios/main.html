@@ -14,6 +14,7 @@
             <p><strong>Haga click en los nombres para ver más detalles sobre la reserva.</strong></p>
         {% else %}
             <p><strong>Esta página es para ver reservas, si eres un administrador, inicie sesión para poder añadirlas o modificarlas.</strong></p>
+            <a role="button" href="{% url 'add_client_form' %}" class="btn btn-primary">Pedir una reserva</a>
             <a role="button" href="{% url 'login' %}" class="btn btn-primary">Iniciar sesión</a>
             <br>
             <br>

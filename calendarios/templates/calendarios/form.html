@@ -19,6 +19,9 @@
             </div>
         {% else %}
             {{ form.as_p }}
+            <div class="text-center">
+                <p>Precio: <em id='precio'></em></p>
+            </div>
         {% endif %}
     <form>
 
@@ -27,6 +30,7 @@
             <p>Precio: {{ precio }} guaraníes.</p>
             <p><strong>La reserva durará {{ reserva_length }} dia(s).</strong></p>
             {% if form_results.email %}
+                <!-- TODO: Send email to mom if this is sent anonyymously -->
                 <p><strong>Se enviará un email de confirmación.</strong></p>
             {% endif %}
             <a href="/add_client_form" role="button" class="btn btn-primary add_left">Volver al formulario</a>
@@ -39,7 +43,7 @@
     {% endif %}
 </div>
 <script>
-    var casilla_precio = document.querySelector('#id_precio');
+    var casilla_precio = document.querySelector('#precio');
     var casilla_adultos = document.querySelector('#id_cantidad_adultos');
     var casilla_menores = document.querySelector('#id_cantidad_menores');
     var casilla_gratis = document.querySelector('#id_cantidad_gratis');
@@ -49,10 +53,10 @@
     function update_precio() {
         var total = Number(casilla_adultos.value) * precio_adultos + Number(casilla_menores.value) * precio_menores;
         if (total >= precio_minimo) {
-            casilla_precio.value = total;
+            casilla_precio.innerHTML = total.toLocaleString();
         }
         else {
-            casilla_precio.value = precio_minimo;
+            casilla_precio.innerHTML = precio_minimo.toLocaleString();
         }
     }
     casilla_adultos.addEventListener('change', update_precio);

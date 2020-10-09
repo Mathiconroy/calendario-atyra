@@ -49,7 +49,8 @@ def calculate_price(cantidad_adultos, cantidad_menores):
         precio = total
     else:
         precio = precio_minimo
-    return f'{precio:,}'
+    #f'{precio:,}'
+    return precio
 
 def remove_not_used_fields(all_fields):
     """Removes all unused fields from a dictionary with all the form fields."""
@@ -126,7 +127,6 @@ def index(request):
 
     return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados':dias_ocupados_dict})
 
-@login_required
 def add_client_form(request):
     if request.method == "POST":
         form = AddClientForm(request.POST)
@@ -134,7 +134,6 @@ def add_client_form(request):
             form_results = form.clean() # This is here to validate again with my custom clean() method in forms.py
             if form_results['confirm'] == False:
                 form_results['confirm'] = True
-                print(form_results)
                 form = AddClientForm(initial={
                     'nombre': form_results['nombre'],
                     'casa': form_results['casa'],
@@ -154,16 +153,30 @@ def add_client_form(request):
                     'form':form,
                     'form_results':form_results, 
                     'confirm':True, 
-                    'precio':precio, 
-                    'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days
+                    'precio':f'{precio:,}',
+                    'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days,
                 })
             else:
-                r = Reservas(casa=form_results['casa'], nombre=form_results['nombre'], email=form_results['email'], 
-                            cantidad_personas=form_results['cantidad_personas'], fecha_inicio=form_results['fecha_inicio'],
-                            fecha_fin=form_results['fecha_fin'], notas=form_results['notas'])
+                if request.user.is_authenticated:
+                    estado = 1
+                else:
+                    estado = 2
+                r = Reservas(
+                    casa=form_results['casa'], 
+                    nombre=form_results['nombre'], 
+                    email=form_results['email'], 
+                    cantidad_adultos=form_results['cantidad_adultos'], 
+                    cantidad_menores=form_results['cantidad_menores'],
+                    cantidad_gratis=form_results['cantidad_gratis'],
+                    fecha_inicio=form_results['fecha_inicio'],
+                    fecha_fin=form_results['fecha_fin'], 
+                    notas=form_results['notas'],
+                    estado=estado
+                )
                 r.save()
-                if form_results['email']:
-                    send_confirmation_email(form_results)
+                # TODO: Probably rework this since anyone can complete this now
+                #if form_results['email']:
+                #    send_confirmation_email(form_results)
                 messages.add_message(request, messages.SUCCESS, 'Reserva añadida', extra_tags="alert alert-success text-center")
                 return redirect('index')
 

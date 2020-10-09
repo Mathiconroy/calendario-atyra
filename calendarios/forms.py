@@ -20,12 +20,10 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
     notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas', 'size':1}))
     edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput())
     confirm = forms.BooleanField(label='Confirm', required=False, widget=forms.HiddenInput())
-    precio = forms.IntegerField(required=True, label='Precio', widget=forms.NumberInput(attrs={'class':'form-control'}))
 
     # NOTE TO SELF: PYTHON EVALUATES 0 TO FALSE AND OTHER NUMBERS TO TRUE LMAOOOOOOOOOOOO
     def clean(self):
         cleaned_data = super().clean()
-        casilla_precio = cleaned_data.get('precio')
         fecha_inicio = cleaned_data.get('fecha_inicio')
         fecha_fin = cleaned_data.get('fecha_fin')
         casa = cleaned_data.get('casa')
@@ -33,7 +31,6 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
         id = cleaned_data.get('id')
         cantidad_adultos = cleaned_data.get('cantidad_adultos')
         cantidad_menores = cleaned_data.get('cantidad_menores')
-        cantidad_gratis = cleaned_data.get('cantidad_gratis')
 
         if fecha_fin and fecha_inicio:
             if not ((fecha_fin - fecha_inicio) >= timedelta(days=0)):
@@ -55,11 +52,9 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
                     Reservas.objects.filter(fecha_inicio__gte=fecha_inicio).filter(fecha_fin__lte=fecha_fin).filter(casa=int(casa)).exclude(id=id)):
                     raise forms.ValidationError("ERROR: El rango de fechas seleccionado no está disponible para esta casa.")
         
-        if cantidad_adultos + cantidad_menores + cantidad_gratis <= 0 or cantidad_adultos + cantidad_menores + cantidad_gratis > 10:
+        # TODO: Confirm with mom whether cantidad_gratis should count for the total or not, I'm leaving it without it for the time being.
+        if cantidad_adultos + cantidad_menores <= 0 or cantidad_adultos + cantidad_menores > 10:
             raise forms.ValidationError('ERROR: La cantidad de personas es invalida.')
-
-        if (cantidad_adultos * precio_adultos + cantidad_menores * precio_menores != casilla_precio):
-            raise forms.ValidationError('ERROR: El precio no coincide con las cantidades introducidas.')
 
         return cleaned_data
 
