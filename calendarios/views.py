@@ -158,9 +158,9 @@ def add_client_form(request):
                 })
             else:
                 if request.user.is_authenticated:
-                    estado = 1
+                    estado = 0
                 else:
-                    estado = 2
+                    estado = 1
                 r = Reservas(
                     casa=form_results['casa'], 
                     nombre=form_results['nombre'], 
