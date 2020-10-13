@@ -32,10 +32,12 @@
         </thead>
         <tbody>
             {% load calendariotags %}
-            {% for fecha in date_list %} <!-- render_cell is in calendariostags.py -->
+            <!-- render_cell is in calendariostags.py -->
+            <!-- dias_ocupados is a dictionary and fecha is date object -->
+            {% for fecha in date_list %} 
             <tr>
                 <td>{{ fecha }}</td>
-                {% render_row dias_ocupados fecha %} <!-- dias_ocupados is a dictionary and fecha is date object -->
+                {% render_row dias_ocupados fecha %} 
             </tr>
             {% endfor %}
         </tbody>
