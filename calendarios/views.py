@@ -7,6 +7,8 @@ from django.template.loader import render_to_string
 from django.contrib.staticfiles import finders
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout_then_login
+from django.core.mail import send_mail
+from django.urls import reverse
 
 # Modules from the project imports
 from .forms import AddClientForm
@@ -95,6 +97,15 @@ def send_confirmation_email(form_results):
     smtp.sendmail(EMAIL_USERNAME, form_results['email'], msgRoot.as_string())
     smtp.quit()
 
+def send_notice_reservation_email(form_results):
+    # This works but TODO: next parameter in url in login doesn't work correctly
+    send_mail(
+        f'Pedido de reserva de {form_results["nombre"]}.',
+        f'Se pidio una reserva para {_date(form_results["fecha_inicio"])} hasta {_date(form_results["fecha_fin"])}, haga click en el siguiente enlace para ver mas informacion: {form_results["url"]}',
+        os.environ.get('EMAIL_USERNAME', None),
+        [os.environ.get('EMAIL_USERNAME', None)],
+    )
+
 def index(request):
     days_to_check_count = 120
     # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
@@ -158,9 +169,9 @@ def add_client_form(request):
                 })
             else:
                 if request.user.is_authenticated:
-                    estado = 0
-                else:
                     estado = 1
+                else:
+                    estado = 0
                 r = Reservas(
                     casa=form_results['casa'], 
                     nombre=form_results['nombre'], 
@@ -174,6 +185,8 @@ def add_client_form(request):
                     estado=estado
                 )
                 r.save()
+                form_results['url'] = request.build_absolute_uri('/view_client_form/' + str(r.id))
+                send_notice_reservation_email(form_results)
                 # TODO: Probably rework this since anyone can complete this now
                 #if form_results['email']:
                 #    send_confirmation_email(form_results)
@@ -220,7 +233,7 @@ def edit_client_form(request, id):
 
 @login_required
 def test_mail(request):
-    send_confirmation_email()
+    #send_confirmation_email()
     return render(request, 'calendarios/mail_template.html')
 
 def logout(request):
