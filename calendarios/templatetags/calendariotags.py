@@ -15,14 +15,26 @@ def render_row(context, dictionary, fecha):
     request = context['request']
     #print('fecha', fecha, 'dictionary', dictionary[fecha])
     table_row = ''
+    red_hex_value = '#FF6666'
+    green_hex_value = '#66FF66'
+    yellow_hex_value = '#FFFF66'
     for reserva in dictionary[fecha]:
         if reserva:
-            table_row = table_row + format_html("<td class='calendario-row-data' bgcolor='#FF6666'>Reservado por <strong><a href='/view_client_form/{}'>{}</a></strong> ({} personas)</td>",
+            if reserva.estado == 0:
+                color = yellow_hex_value
+                text = 'Reserva pedida por'
+            else:
+                color = red_hex_value
+                text = 'Reservado por'
+            table_row = table_row + format_html("<td class='calendario-row-data' bgcolor={}>{} <strong><a href='/view_client_form/{}'>{}</a></strong> ({} personas)</td>",
+                color,
+                text,
                 reserva.id,
                 reserva.nombre,
                 reserva.cantidad_adultos + reserva.cantidad_menores + reserva.cantidad_gratis)
         else:
-            table_row = table_row + format_html("<td bgcolor='#66FF66'>Libre</td>")
+            color = green_hex_value
+            table_row = table_row + format_html("<td bgcolor={}>Libre</td>", color)
 
     return mark_safe(table_row)
 
