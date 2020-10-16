@@ -15,6 +15,7 @@ class Reservas(models.Model):
     fecha_fin = models.DateField(null=False)
     notas = models.TextField()
     estado = models.IntegerField(default=1, choices=ESTADOS)
+    price = models.CharField(default=0, max_length=50)
 
     def __str__(self):
         return f"ID: {self.id}, Nombre: {self.nombre}, Casa: {self.casa} {self.fecha_inicio.strftime('%d/%m/%Y')} - {self.fecha_fin.strftime('%d/%m/%Y')}"
