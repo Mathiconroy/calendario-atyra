@@ -8,6 +8,7 @@ precio_adultos = 150000
 precio_menores = 120000
 
 class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
+    # TODO: Ask mom if two people can REQUEST a reservation on the same date
     id = forms.IntegerField(required=False, label='ID', widget=forms.HiddenInput())
     casa = forms.ChoiceField(label='Casa', choices=[('', 'Seleccione una casa'), (1, 'Barro Roga'), (2, 'Ysypo Roga'), (3, 'Hierro Roga')], widget=forms.Select(attrs={'class':'form-control'}))
     nombre = forms.CharField(label='Nombre', max_length=150, strip=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre del cliente'}))
@@ -19,6 +20,7 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
     fecha_fin = forms.DateField(label='Fecha de fin', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas', 'size':1}))
     edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput())
+    tipo_adelanto = forms.ChoiceField(label='Medio de seña', choices=[('', 'Seleccione un metodo'), (1, 'Giro'), (2, 'Depósito bancario')])
     confirm = forms.BooleanField(label='Confirm', required=False, widget=forms.HiddenInput())
 
     # NOTE TO SELF: PYTHON EVALUATES 0 TO FALSE AND OTHER NUMBERS TO TRUE LMAOOOOOOOOOOOO
