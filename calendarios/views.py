@@ -232,6 +232,13 @@ def edit_client_form(request, id):
     return render(request, 'calendarios/edit_form.html', {'form':form, 'id':id})
 
 @login_required
+def confirm_reservation(request, id):
+    # TODO: Maybe show an error if it was already updated?
+    Reservas.objects.filter(id=id).update(estado=1)
+    messages.add_message(request, messages.SUCCESS, 'Reserva confirmada', extra_tags="alert alert-success text-center")
+    return redirect('index')
+
+@login_required
 def test_mail(request):
     #send_confirmation_email()
     return render(request, 'calendarios/mail_template.html')
