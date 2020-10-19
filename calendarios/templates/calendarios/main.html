@@ -36,7 +36,7 @@
             <!-- dias_ocupados is a dictionary and fecha is date object -->
             {% for fecha in date_list %} 
             <tr>
-                <td>{{ fecha }}</td>
+                {% render_date fecha %}
                 {% render_row dias_ocupados fecha %} 
             </tr>
             {% endfor %}

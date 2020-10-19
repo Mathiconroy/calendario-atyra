@@ -13,19 +13,18 @@ register = template.Library()
 def render_row(context, dictionary, fecha):
     """Look up the dictionary with the given date and make a string of html to render the table row"""
     request = context['request']
-    #print('fecha', fecha, 'dictionary', dictionary[fecha])
     table_row = ''
-    red_hex_value = '#FF6666'
-    green_hex_value = '#66FF66'
-    yellow_hex_value = '#FFFF66'
+    red_hex_value = "#FF6666"
+    green_hex_value = "#66FF66"
+    yellow_hex_value = "#FFFF66"
     for reserva in dictionary[fecha]:
         if reserva:
             if reserva.estado == 0:
                 color = yellow_hex_value
-                text = 'Reserva pedida por'
+                text = "Reserva pedida por"
             else:
                 color = red_hex_value
-                text = 'Reservado por'
+                text = "Reservado por"
             table_row = table_row + format_html("<td class='calendario-row-data' bgcolor={}>{} <strong><a href='/view_client_form/{}'>{}</a></strong> ({} personas)</td>",
                 color,
                 text,
@@ -37,6 +36,13 @@ def render_row(context, dictionary, fecha):
             table_row = table_row + format_html("<td bgcolor={}>Libre</td>", color)
 
     return mark_safe(table_row)
+
+@register.simple_tag(name='render_date')
+def render_date(date):
+    if date.weekday() == 6 or date.weekday() == 5:
+        return mark_safe(format_html("<td><b>{}</b></td>", _date(date)))
+    else:
+        return mark_safe(format_html("<td>{}</td>", _date(date)))
 
 @register.simple_tag(name='render_confirm')
 def render_confirm(dictionary, key): # The dictionary contains submitted ReservaForm values
