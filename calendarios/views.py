@@ -155,6 +155,7 @@ def add_client_form(request):
                     'notas': form_results['notas'],
                     'edit': form_results['edit'],
                     'confirm': form_results['confirm'],
+                    'tipo_adelanto': form_results['tipo_adelanto']
                 }) # If defining the dictionary it works for some reason???
                 # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE IF I DO INITIAL=FORM_RESULTS
                 messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
@@ -168,10 +169,6 @@ def add_client_form(request):
                     'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days,
                 })
             else:
-                if request.user.is_authenticated:
-                    estado = 1
-                else:
-                    estado = 0
                 r = Reservas(
                     casa=form_results['casa'], 
                     nombre=form_results['nombre'], 
@@ -182,15 +179,20 @@ def add_client_form(request):
                     fecha_inicio=form_results['fecha_inicio'],
                     fecha_fin=form_results['fecha_fin'], 
                     notas=form_results['notas'],
-                    estado=estado
+                    tipo_adelanto=form_results['tipo_adelanto'],
                 )
+                if request.user.is_authenticated:
+                    r.estado = 1
+                    messages.add_message(request, messages.SUCCESS, 'Reserva añadida', extra_tags="alert alert-success text-center")
+                else:
+                    r.estado = 0
+                    form_results['url'] = request.build_absolute_uri('/view_client_form/' + str(r.id))
+                    send_notice_reservation_email(form_results)
+                    messages.add_message(request, messages.SUCCESS, 'Reserva pedida', extra_tags="alert alert-success text-center")
                 r.save()
-                form_results['url'] = request.build_absolute_uri('/view_client_form/' + str(r.id))
-                send_notice_reservation_email(form_results)
                 # TODO: Probably rework this since anyone can complete this now
                 #if form_results['email']:
                 #    send_confirmation_email(form_results)
-                messages.add_message(request, messages.SUCCESS, 'Reserva añadida', extra_tags="alert alert-success text-center")
                 return redirect('index')
 
     if request.method == "GET":
@@ -202,7 +204,9 @@ def add_client_form(request):
 def view_client_form(request, id):
     reserva = get_object_or_404(Reservas, id=id)
     casa = casas[int(reserva.casa)]
-    return render(request, 'calendarios/view_form.html', {'reserva':reserva, 'casa':casa})
+    estado = reserva.get_estado_display()
+    tipo_adelanto = reserva.get_tipo_adelanto_display()
+    return render(request, 'calendarios/view_form.html', {'reserva':reserva, 'casa':casa, 'estado':estado, 'tipo_adelanto':tipo_adelanto})
 
 @login_required
 def edit_client_form(request, id):
@@ -234,8 +238,18 @@ def edit_client_form(request, id):
 @login_required
 def confirm_reservation(request, id):
     # TODO: Maybe show an error if it was already updated?
-    Reservas.objects.filter(id=id).update(estado=1)
-    messages.add_message(request, messages.SUCCESS, 'Reserva confirmada', extra_tags="alert alert-success text-center")
+    r = Reservas.objects.get(id=id)
+    if r.estado == 0:
+        r.estado = 1
+        r.save()
+        messages.add_message(request, messages.SUCCESS, 'Reserva confirmada', extra_tags="alert alert-success text-center")
+    else:
+        messages.add_message(request, messages.WARNING, 'La reserva ya estaba confirmada', extra_tags="alert alert-warning text-center")
+    return redirect('index')
+
+@login_required
+def delete_reservation(request, id):
+    # TODO: This
     return redirect('index')
 
 @login_required

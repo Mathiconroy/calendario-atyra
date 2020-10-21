@@ -10,11 +10,14 @@
     <p>Cantidad de menores de 2 años: {{ reserva.cantidad_gratis }}</p>
     <p>Correo: {{ reserva.email }}</p>
     <p>Notas: {{ reserva.notas }}</p>
+    <P>Estado: {{ estado }}</p>
+    <p>Medio de seña: {{ tipo_adelanto }}</p>
     <div class="button-box">
-        <a href="/" role="button" class="btn btn-primary add_left">Volver a la página principal</a>
+        <a href="{% url 'index' %}" role="button" class="btn btn-primary add_left">Volver a la página principal</a>
         <a href="{% url 'edit_client_form' reserva.id %}" role="button" class="btn btn-primary">Editar esta reserva</a>
         <br>
         <br>
+        <a href="{% url 'delete_reservation' reserva.id %}" role="button" class="btn btn-primary">Eliminar la reserva</a>
         <a href="{% url 'confirm_reservation' reserva.id %}" role="button" class="btn btn-primary">Confirmar la reserva</a>
     </div>
 </div>
