@@ -20,7 +20,7 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
     fecha_fin = forms.DateField(label='Fecha de fin', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas', 'size':1}))
     edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput())
-    tipo_adelanto = forms.ChoiceField(label='Medio de seña', choices=[('', 'Seleccione un metodo'), (1, 'Giro'), (2, 'Depósito bancario')])
+    tipo_adelanto = forms.ChoiceField(label='Medio de seña', choices=[('', 'Seleccione un metodo'), (1, 'Giro'), (2, 'Depósito bancario')], widget=forms.Select(attrs={'class':'form-control'}))
     confirm = forms.BooleanField(label='Confirm', required=False, widget=forms.HiddenInput())
 
     # NOTE TO SELF: PYTHON EVALUATES 0 TO FALSE AND OTHER NUMBERS TO TRUE LMAOOOOOOOOOOOO
