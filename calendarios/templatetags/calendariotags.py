@@ -21,16 +21,29 @@ def render_row(context, dictionary, fecha):
         if reserva:
             if reserva.estado == 0:
                 color = yellow_hex_value
-                text = "Reserva pedida por"
+                if request.user.is_authenticated:
+                    text = "Reserva pedida por"
+                else:
+                    text = "Reserva sin confirmar"
             else:
                 color = red_hex_value
-                text = "Reservado por"
-            table_row = table_row + format_html("<td class='calendario-row-data' bgcolor={}>{} <strong><a href='/view_client_form/{}'>{}</a></strong> ({} personas)</td>",
-                color,
-                text,
-                reserva.id,
-                reserva.nombre,
-                reserva.cantidad_adultos + reserva.cantidad_menores + reserva.cantidad_gratis)
+                if request.user.is_authenticated:
+                    text = "Reservado por"
+                else:
+                    text = "Reservado"
+            if request.user.is_authenticated:
+                table_row = table_row + format_html("<td class='calendario-row-data' bgcolor={}>{} <strong><a href='/view_client_form/{}'>{}</a></strong> ({} personas)</td>",
+                    color,
+                    text,
+                    reserva.id,
+                    reserva.nombre,
+                    reserva.cantidad_adultos + reserva.cantidad_menores + reserva.cantidad_gratis
+                )
+            else:
+                table_row = table_row + format_html("<td class='calendario-row-data' bgcolor={}>{}</td>",
+                    color,
+                    text,
+                )
         else:
             color = green_hex_value
             table_row = table_row + format_html("<td bgcolor={}>Libre</td>", color)
@@ -53,11 +66,11 @@ def render_confirm(dictionary, key): # The dictionary contains submitted Reserva
         "nombre":"Nombre",
         "casa":"Casa",
         "cantidad_adultos":"Cantidad de adultos",
-        'cantidad_menores':'Cantidad de menores',
-        'cantidad_gratis':'Cantidad de gratis',
+        "cantidad_menores":"Cantidad de menores",
+        "cantidad_gratis":"Cantidad de gratis",
+        "tipo_adelanto": "Medio de seña",
         "notas":"Notas",
     }
-    print(dictionary, key)
     if key == "casa":
         return f"{correct_names_dict[key]}: {casas.get(int(dictionary.get(key)))}"
     elif key == "fecha_fin" or key == "fecha_inicio":
