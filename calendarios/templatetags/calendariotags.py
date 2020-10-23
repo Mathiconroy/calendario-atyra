@@ -3,7 +3,7 @@ from django.utils.safestring import mark_safe, SafeString
 from django.utils.html import format_html
 from django.template.defaultfilters import date as _date
 
-from ..views import casas 
+from ..views import casas, tipos_adelanto
 
 register = template.Library()
 
@@ -73,6 +73,8 @@ def render_confirm(dictionary, key): # The dictionary contains submitted Reserva
     }
     if key == "casa":
         return f"{correct_names_dict[key]}: {casas.get(int(dictionary.get(key)))}"
+    elif key == "tipo_adelanto":
+        return f"{correct_names_dict[key]}: {tipos_adelanto.get(int(dictionary.get(key)))}"
     elif key == "fecha_fin" or key == "fecha_inicio":
         return f"{correct_names_dict[key]}: {_date(dictionary.get(key))}"
     else:
