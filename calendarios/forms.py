@@ -18,9 +18,9 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
     cantidad_gratis = forms.IntegerField(label='Cantidad de menores de 23 meses', initial=0, min_value=0, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de menores de 18 meses'}))
     fecha_inicio = forms.DateField(label='Fecha de inicio', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     fecha_fin = forms.DateField(label='Fecha de fin', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
+    tipo_adelanto = forms.ChoiceField(label='Medio de seña', choices=[('', 'Seleccione un metodo'), (1, 'Giro'), (2, 'Depósito bancario')], widget=forms.Select(attrs={'class':'form-control'}))
     notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas', 'size':1}))
     edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput())
-    tipo_adelanto = forms.ChoiceField(label='Medio de seña', choices=[('', 'Seleccione un metodo'), (1, 'Giro'), (2, 'Depósito bancario')], widget=forms.Select(attrs={'class':'form-control'}))
     confirm = forms.BooleanField(label='Confirm', required=False, widget=forms.HiddenInput())
 
     # NOTE TO SELF: PYTHON EVALUATES 0 TO FALSE AND OTHER NUMBERS TO TRUE LMAOOOOOOOOOOOO

@@ -13,6 +13,7 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
     path('test', views.test_mail, name='test'),
     path('confirm_reservation/<int:id>', views.confirm_reservation, name='confirm_reservation'),
+    path('delete_reservation/<int:id>', views.delete_reservation, name='delete_reservation'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

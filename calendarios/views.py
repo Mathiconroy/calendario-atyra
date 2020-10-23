@@ -25,6 +25,7 @@ from datetime import date, timedelta
 import os
 
 casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
+tipos_adelanto = {0:'Giro', 1:'Depósito', 2:'Otro'}
 
 def generate_rows(date_list, reservas):
     """
@@ -61,6 +62,7 @@ def remove_not_used_fields(all_fields):
         all_fields.pop(e)
 
 def send_confirmation_email(form_results):
+    # TODO: Rework this, use form_results or the class.
     """Given the dictionary of the results of a form, it sends an email with all the data."""
     EMAIL_USERNAME = os.environ.get('EMAIL_USERNAME', None)
     EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', None)
@@ -155,7 +157,7 @@ def add_client_form(request):
                     'notas': form_results['notas'],
                     'edit': form_results['edit'],
                     'confirm': form_results['confirm'],
-                    'tipo_adelanto': form_results['tipo_adelanto']
+                    'tipo_adelanto': form_results['tipo_adelanto'],
                 }) # If defining the dictionary it works for some reason???
                 # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE IF I DO INITIAL=FORM_RESULTS
                 messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
@@ -243,18 +245,19 @@ def confirm_reservation(request, id):
         r.estado = 1
         r.save()
         messages.add_message(request, messages.SUCCESS, 'Reserva confirmada', extra_tags="alert alert-success text-center")
+        # TODO: This
+        #send_confirmation_email()
     else:
         messages.add_message(request, messages.WARNING, 'La reserva ya estaba confirmada', extra_tags="alert alert-warning text-center")
     return redirect('index')
 
 @login_required
 def delete_reservation(request, id):
-    # TODO: This
+    Reservas.objects.filter(id=id).delete()
     return redirect('index')
 
 @login_required
 def test_mail(request):
-    #send_confirmation_email()
     return render(request, 'calendarios/mail_template.html')
 
 def logout(request):
