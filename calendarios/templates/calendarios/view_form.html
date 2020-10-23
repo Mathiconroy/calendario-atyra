@@ -17,8 +17,8 @@
         <a href="{% url 'edit_client_form' reserva.id %}" role="button" class="btn btn-primary">Editar esta reserva</a>
         <br>
         <br>
-        <a href="{% url 'delete_reservation' reserva.id %}" role="button" class="btn btn-primary">Eliminar la reserva</a>
-        <a href="{% url 'confirm_reservation' reserva.id %}" role="button" class="btn btn-primary">Confirmar la reserva</a>
+        <a href="{% url 'delete_reservation' reserva.id %}" role="button" class="btn btn-primary button_alert add_left">Eliminar la reserva</a>
+        <a href="{% url 'confirm_reservation' reserva.id %}" role="button" class="btn btn-primary button_alert">Confirmar la reserva</a>
     </div>
 </div>
 {% endblock %}
