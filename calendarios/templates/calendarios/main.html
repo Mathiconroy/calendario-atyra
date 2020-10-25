@@ -8,13 +8,7 @@
         <h1><b>Reservas Aty Roga</b></h1>
         <br>
         {% if user.is_authenticated %}
-            <a role="button" href="{% url 'add_client_form' %}" class="btn btn-primary">Añadir reserva</a>
-            <a role="button" href="{% url 'logout' %}" class="btn btn-primary">Cerrar sesión</a>
-
-            <br>
-
             <p><strong>Haga click en los nombres para ver más detalles sobre la reserva.</strong></p>
-        {% else %}
         {% endif %}
     </div>
 
