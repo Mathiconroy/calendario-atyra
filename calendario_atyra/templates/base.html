@@ -33,7 +33,7 @@
         <ul class="navbar-nav ml-auto">
           {% if user.is_authenticated %}
           <li class="nav-item">
-            <a class="btn btn-outline-light" href="{% url 'login' %}" role="button">Cerrar sesion</a>
+            <a class="btn btn-outline-light" href="{% url 'logout' %}" role="button">Cerrar sesion</a>
           </li>
           {% else %}
           <li class="nav-item">
