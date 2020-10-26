@@ -60,6 +60,9 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
 
         return cleaned_data
 
+class ChangePayment(forms.Form):
+    ammount = forms.IntegerField(label='Cantidad', min_value=0, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad'}))
+
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Usuario', strip=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre de usuario'}))
     password = forms.CharField(label='Contraseña', widget=forms.PasswordInput(attrs={'class':'form-control'}))
