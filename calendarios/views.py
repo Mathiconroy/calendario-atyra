@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 
 # Modules from the project imports
-from .forms import AddClientForm
+from .forms import AddClientForm, ChangePaymentForm
 from .models import Reservas
 
 # Email related imports (not Django)
@@ -229,6 +229,21 @@ def confirm_reservation(request, id):
     else:
         messages.add_message(request, messages.WARNING, 'La reserva ya estaba confirmada', extra_tags="alert alert-warning text-center")
     return redirect('index')
+
+@login_required
+def change_payment(request, id):
+    r = Reservas.objects.get(id=id)
+    if request.method == "POST":
+        form = ChangePaymentForm()
+        if form.is_valid():
+            r.deposito_inicial = form['cantidad_deposito']
+            r.save()
+            messages.add_message(request, messages.SUCCESS, 'Seña añadida', extra_tags="alert alert-success text-center")
+            return redirect('index')
+
+    if request.method == "GET":
+        form = ChangePaymentForm(initial=r.deposito_inicial)
+    return render(request, 'calendarios/change_payment_form.html', {'form':form, 'reserva':r})
 
 @login_required
 def delete_reservation(request, id):

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="text-center">
+    <h1>Formulario - Añadir depósito</h1>
+</div>
+<form action="{% url 'change_payment' reserva.id %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="text-center">
+        Falta <em id='saldo'></em> guaraníes.
+    </div>
+</form>
+<script>
+    var casilla_cant_deposito = document.querySelector("#id_cantidad_deposito");
+    var saldo = document.querySelector("#saldo");
+    casilla_cant_deposito.addEventListener('change', function() {
+        saldo.textContent = "0";
+    });
+</script>
+{% endblock %}
