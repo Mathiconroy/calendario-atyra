@@ -146,9 +146,10 @@ def add_client_form(request):
                     'form':form,
                     'form_results':form_results, 
                     'confirm':True, 
-                    'precio':f'{precio:,}',
+                    'precio':precio,
                     'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days,
                 })
+                # f'{precio:,}' Use this to render price in text form
             else:
                 r = Reservas(
                     casa=form_results['casa'], 
@@ -161,6 +162,7 @@ def add_client_form(request):
                     fecha_fin=form_results['fecha_fin'], 
                     notas=form_results['notas'],
                     tipo_adelanto=form_results['tipo_adelanto'],
+                    precio=calculate_price(int(form_results['cantidad_adultos']), int(form_results['cantidad_menores'])),
                 )
                 if request.user.is_authenticated:
                     r.estado = 1
@@ -234,16 +236,17 @@ def confirm_reservation(request, id):
 def change_payment(request, id):
     r = Reservas.objects.get(id=id)
     if request.method == "POST":
-        form = ChangePaymentForm()
+        form = ChangePaymentForm(request.POST)
         if form.is_valid():
-            r.deposito_inicial = form['cantidad_deposito']
+            r.deposito_inicial = int(form.cleaned_data['cantidad_deposito'])
             r.save()
-            messages.add_message(request, messages.SUCCESS, 'Seña añadida', extra_tags="alert alert-success text-center")
+            messages.add_message(request, messages.SUCCESS, 'Seña cambiada', extra_tags="alert alert-success text-center")
             return redirect('index')
 
     if request.method == "GET":
-        form = ChangePaymentForm(initial=r.deposito_inicial)
-    return render(request, 'calendarios/change_payment_form.html', {'form':form, 'reserva':r})
+        form = ChangePaymentForm(initial={'cantidad':r.deposito_inicial})
+
+    return render(request, 'calendarios/change_payment_form.html', {'form':form, 'reserva':r, 'saldo':f'{r.precio - r.deposito_inicial:,}', 'precio':f'{r.precio:,}'})
 
 @login_required
 def delete_reservation(request, id):

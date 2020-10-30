@@ -2,20 +2,26 @@
 
 {% block main %}
 <div class="text-center">
-    <h1>Formulario - Añadir depósito</h1>
+    <h1>Formulario - Cambiar depósito</h1>
 </div>
 <form action="{% url 'change_payment' reserva.id %}" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <div class="text-center">
-        Falta <em id='saldo'></em> guaraníes.
+        <p>Precio total: <em>{{ precio }}</em> guaraníes.</p>
+        Saldo: <em id='saldo'>{{ saldo }}</em> guaraníes.
+        <br>
+        <br>
+        <button type="submit" class="btn btn-primary">Cambiar</button>      
     </div>
 </form>
+{{ reserva.precio|json_script:"precio-total" }}
 <script>
     var casilla_cant_deposito = document.querySelector("#id_cantidad_deposito");
+    const precio_total = JSON.parse(document.querySelector("#precio-total").textContent);
     var saldo = document.querySelector("#saldo");
     casilla_cant_deposito.addEventListener('change', function() {
-        saldo.textContent = "0";
+        saldo.textContent = (Number(precio_total) - this.value).toLocaleString();
     });
 </script>
 {% endblock %}
