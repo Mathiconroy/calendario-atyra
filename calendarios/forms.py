@@ -62,6 +62,7 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
 
 class ChangePaymentForm(forms.Form):
     cantidad_deposito = forms.IntegerField(label='Cantidad', min_value=0, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad'}))
+    # TODO: Validate this, the difference can't be negative lmao
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Usuario', strip=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre de usuario'}))
