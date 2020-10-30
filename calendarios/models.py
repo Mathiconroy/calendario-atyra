@@ -21,7 +21,7 @@ class Reservas(models.Model):
     notas = models.TextField()
     estado = models.IntegerField(default=1, choices=ESTADOS)
     tipo_adelanto = models.IntegerField(default=2, choices=TIPOS_ADELANTO)
-    precio = models.CharField(default=0, max_length=50)
+    precio = models.IntegerField(default=0)
     deposito_inicial = models.IntegerField(default=0)
 
     def __str__(self):
