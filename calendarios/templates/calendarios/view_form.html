@@ -3,6 +3,16 @@
 {% block main %}
 <div class="text-center">
     <h1>Reserva de {{ reserva.nombre }}</h1>
+    <!-- Maybe consider doing it with a table like this
+    <table class="table table-borderless" id="mostrar">
+        <tbody>
+            <tr class="d-flex">
+                <th class="col-10">Casa</th>
+                <td class="col-1">{{ casa }}</td>
+            </tr>
+        </tbody>
+    </table>
+    -->
     <p>Casa: {{ casa }}</p>
     <p>Estadia: {{ reserva.fecha_inicio }} al {{ reserva.fecha_fin }}</p>
     <p>Cantidad de mayores: {{ reserva.cantidad_adultos }}</p>
