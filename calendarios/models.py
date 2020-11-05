@@ -22,7 +22,7 @@ class Reservas(models.Model):
     estado = models.IntegerField(default=1, choices=ESTADOS)
     tipo_adelanto = models.IntegerField(default=2, choices=TIPOS_ADELANTO)
     precio = models.IntegerField(default=0)
-    deposito_inicial = models.IntegerField(default=0)
+    deposito = models.IntegerField(default=0)
 
     def __str__(self):
         return f"ID: {self.id}, Nombre: {self.nombre}, Casa: {self.casa} {self.fecha_inicio.strftime('%d/%m/%Y')} - {self.fecha_fin.strftime('%d/%m/%Y')}"

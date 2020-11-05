@@ -2,7 +2,9 @@
 
 {% block main %}
 <div class="text-center">
-    <h1>Reserva de {{ reserva.nombre }}</h1>
+    <br>
+    <h1><b>Reserva de {{ reserva.nombre }}</b></h1>
+    <br>
     <p>Casa: {{ casa }}</p>
     <p>Estadia: {{ reserva.fecha_inicio }} al {{ reserva.fecha_fin }}</p>
     <p>Cantidad de mayores: {{ reserva.cantidad_adultos }}</p>
@@ -12,6 +14,7 @@
     <p>Notas: {{ reserva.notas }}</p>
     <P>Estado: {{ estado }}</p>
     <p>Medio de seña: {{ tipo_adelanto }}</p>
+    <p>Cantidad señada: {{ reserva.deposito_inicial }} guaraníes.</p>
     <div class="button-box">
         <a href="{% url 'edit_client_form' reserva.id %}" role="button" class="btn btn-primary">Editar reserva</a>
         <a href="{% url 'delete_reservation' reserva.id %}" role="button" class="btn btn-primary button_alert">Eliminar reserva</a>

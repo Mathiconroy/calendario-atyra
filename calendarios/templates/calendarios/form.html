@@ -4,7 +4,9 @@
 {% include 'calendarios/messages.html' with messages=messages %}
 <div class="px-xl-3 container-fluid">
     <div class="text-center">
-        <h1>Formulario - Añadir reserva</h1>
+        <br>
+        <h1><b>{% if user.is_authenticated %}Añadir{% else %}Pedir{% endif %} reserva</b></h1>
+        <br>
     </div>
     <form action="/add_client_form" method="POST">
         {% csrf_token %}

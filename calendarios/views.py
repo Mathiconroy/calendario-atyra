@@ -238,15 +238,15 @@ def change_payment(request, id):
     if request.method == "POST":
         form = ChangePaymentForm(request.POST)
         if form.is_valid():
-            r.deposito_inicial = int(form.cleaned_data['cantidad_deposito'])
+            r.deposito = int(form.cleaned_data['cantidad_deposito'])
             r.save()
             messages.add_message(request, messages.SUCCESS, 'Seña cambiada', extra_tags="alert alert-success text-center")
             return redirect('index')
 
     if request.method == "GET":
-        form = ChangePaymentForm(initial={'cantidad':r.deposito_inicial})
+        form = ChangePaymentForm(initial={'id':id, 'cantidad':r.deposito})
 
-    return render(request, 'calendarios/change_payment_form.html', {'form':form, 'reserva':r, 'saldo':f'{r.precio - r.deposito_inicial:,}', 'precio':f'{r.precio:,}'})
+    return render(request, 'calendarios/change_payment_form.html', {'form':form, 'reserva':r, 'saldo':f'{r.precio - r.deposito:,}', 'precio':f'{r.precio:,}'})
 
 @login_required
 def delete_reservation(request, id):

@@ -2,26 +2,35 @@
 
 {% block main %}
 <div class="text-center">
-    <h1>Formulario - Cambiar depósito</h1>
+    <br>
+    <h1><b>Añadir depósito</b></h1>
+    <br>
 </div>
 <form action="{% url 'change_payment' reserva.id %}" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <div class="text-center">
         <p>Precio total: <em>{{ precio }}</em> guaraníes.</p>
-        Saldo: <em id='saldo'>{{ saldo }}</em> guaraníes.
-        <br>
+        <p>Deposito actual: <em>{{  }}</em> guaraníes.</p>
+        <p id="saldo-text">Saldo: <em id='saldo'>{{ saldo }}</em> guaraníes.</p>
         <br>
         <button type="submit" class="btn btn-primary">Cambiar</button>      
     </div>
 </form>
 {{ reserva.precio|json_script:"precio-total" }}
+{{ reserva.deposito|json_script:"deposito-total" }}
 <script>
     var casilla_cant_deposito = document.querySelector("#id_cantidad_deposito");
-    const precio_total = JSON.parse(document.querySelector("#precio-total").textContent);
+    const precio_total = Number(JSON.parse(document.querySelector("#precio-total").textContent));
+    const deposito_total = Number(JSON.parse(document.querySelector("#deposito-total").textContent));
     var saldo = document.querySelector("#saldo");
+    var saldo_p = document.querySelector("#saldo-text");
     casilla_cant_deposito.addEventListener('change', function() {
-        saldo.textContent = (Number(precio_total) - this.value).toLocaleString();
+        saldo_actual = precio_total - (Number(this.value) + deposito_total);
+        if (saldo_actual < 0) {
+            saldo_p.style.color = "red";
+        }
+        saldo.textContent = saldo_actual;
     });
 </script>
 {% endblock %}

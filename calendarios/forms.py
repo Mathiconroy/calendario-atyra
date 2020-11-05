@@ -11,15 +11,15 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
     # TODO: Ask mom if two people can REQUEST a reservation on the same date
     id = forms.IntegerField(required=False, label='ID', widget=forms.HiddenInput())
     casa = forms.ChoiceField(label='Casa', choices=[('', 'Seleccione una casa'), (1, 'Barro Roga'), (2, 'Ysypo Roga'), (3, 'Hierro Roga')], widget=forms.Select(attrs={'class':'form-control'}))
-    nombre = forms.CharField(label='Nombre', max_length=150, strip=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre del cliente'}))
-    email = forms.EmailField(required=False, label='Email', widget=forms.EmailInput(attrs={'class':'form-control', 'placeholder':'Email del cliente'}))
-    cantidad_adultos = forms.IntegerField(label='Cantidad de adultos (a partir de 13 años)', initial=0, min_value=1, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de adultos'}))
-    cantidad_menores = forms.IntegerField(label='Cantidad de niños (entre 2 a 12 años)', initial=0, min_value=0, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de niños'}))
-    cantidad_gratis = forms.IntegerField(label='Cantidad de menores de 23 meses', initial=0, min_value=0, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad de menores de 18 meses'}))
+    nombre = forms.CharField(label='Nombre', max_length=150, strip=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    email = forms.EmailField(required=False, label='Correo electrónico', widget=forms.EmailInput(attrs={'class':'form-control'}))
+    cantidad_adultos = forms.IntegerField(label='Cantidad de adultos (a partir de 13 años)', initial=0, min_value=1, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control'}))
+    cantidad_menores = forms.IntegerField(label='Cantidad de niños (entre 2 a 12 años)', initial=0, min_value=0, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control'}))
+    cantidad_gratis = forms.IntegerField(label='Cantidad de menores de 23 meses', initial=0, min_value=0, max_value=10, widget=forms.NumberInput(attrs={'class':'form-control'}))
     fecha_inicio = forms.DateField(label='Fecha de inicio', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     fecha_fin = forms.DateField(label='Fecha de fin', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
     tipo_adelanto = forms.ChoiceField(label='Medio de seña', choices=[('', 'Seleccione un metodo'), (1, 'Giro'), (2, 'Depósito bancario')], widget=forms.Select(attrs={'class':'form-control'}))
-    notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'placeholder':'Notas', 'size':1}))
+    notas = forms.CharField(required=False, label='Notas', widget=forms.Textarea(attrs={'class':'form-control', 'size':1}))
     edit = forms.BooleanField(label='Editar', required=False, widget=forms.HiddenInput())
     confirm = forms.BooleanField(label='Confirm', required=False, widget=forms.HiddenInput())
 
@@ -61,7 +61,17 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
         return cleaned_data
 
 class ChangePaymentForm(forms.Form):
+    id = forms.IntegerField(widget=forms.HiddenInput())
     cantidad_deposito = forms.IntegerField(label='Cantidad', min_value=0, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        cantidad_deposito = cleaned_data.get('cantidad_deposito')
+        id = cleaned_data.get('id')
+
+        r = Reservas.objects.get(id=id)
+        if r.precio - (r.deposito + int(cantidad_deposito)) < 0:
+            raise forms.ValidationError("ERROR: El saldo es negativo.") 
     # TODO: Validate this, the difference can't be negative lmao
 
 class LoginForm(AuthenticationForm):
