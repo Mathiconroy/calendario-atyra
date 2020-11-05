@@ -30,9 +30,10 @@
         <div class="text-center">
             <p>Precio: {{ precio }} guaraníes.</p>
             <p><strong>La reserva durará {{ reserva_length }} dia(s).</strong></p>
+            
             {% if form_results.email %}
                 <!-- TODO: Send email to mom if this is sent anonymously -->
-                <p><strong>Se enviará un email de confirmación.</strong></p>
+                <!-- TODO: Remake this probably <p><strong>Se enviará un email de confirmación.</strong></p> -->
             {% endif %}
             <a href="/add_client_form" role="button" class="btn btn-primary add_left">Volver al formulario</a>
             <button type="submit" class="btn btn-primary">Confirmar reserva</button>

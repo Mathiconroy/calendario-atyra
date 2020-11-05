@@ -146,7 +146,7 @@ def add_client_form(request):
                     'form':form,
                     'form_results':form_results, 
                     'confirm':True, 
-                    'precio':precio,
+                    'precio':f'{precio:,}'.replace(',', '.'),
                     'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days,
                 })
                 # f'{precio:,}' Use this to render price in text form
