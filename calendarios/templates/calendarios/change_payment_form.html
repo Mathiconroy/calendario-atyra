@@ -4,14 +4,13 @@
 <div class="text-center">
     <br>
     <h1><b>Añadir depósito</b></h1>
-    <br>
 </div>
 <form action="{% url 'change_payment' reserva.id %}" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <div class="text-center">
         <p>Precio total: <em>{{ precio }}</em> guaraníes.</p>
-        <p>Deposito actual: <em>{{  }}</em> guaraníes.</p>
+        <p>Deposito actual: <em>{{ reserva.deposito }}</em> guaraníes.</p>
         <p id="saldo-text">Saldo: <em id='saldo'>{{ saldo }}</em> guaraníes.</p>
         <br>
         <button type="submit" class="btn btn-primary">Cambiar</button>      
