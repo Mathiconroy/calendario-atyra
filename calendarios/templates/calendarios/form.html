@@ -6,7 +6,6 @@
     <div class="text-center">
         <br>
         <h1><b>{% if user.is_authenticated %}Añadir{% else %}Pedir{% endif %} reserva</b></h1>
-        <br>
     </div>
     <form action="/add_client_form" method="POST">
         {% csrf_token %}
