@@ -1,5 +1,9 @@
-.table {
+.table .table-borderless {
     font-size: 14px;
+}
+
+.text-left {
+    text-align: left;
 }
 
 .add_left {
