@@ -56,11 +56,12 @@ class AddClientForm(forms.Form): # REQUIRED is True by DEFAULT
         
         # TODO: Confirm with mom whether cantidad_gratis should count for the total or not, I'm leaving it without it for the time being.
         if cantidad_adultos + cantidad_menores <= 0 or cantidad_adultos + cantidad_menores > 10:
-            raise forms.ValidationError('ERROR: La cantidad de personas es invalida.')
+            raise forms.ValidationError('ERROR: La cantidad de personas total es inválida. El máximo es 10.')
 
         return cleaned_data
 
 class ChangePaymentForm(forms.Form):
+    # TODO: Ask mom if it's fine how this works, is it fine rn?
     id = forms.IntegerField(widget=forms.HiddenInput())
     cantidad_deposito = forms.IntegerField(label='Cantidad', min_value=0, widget=forms.NumberInput(attrs={'class':'form-control', 'placeholder':'Cantidad'}))
 
@@ -72,8 +73,7 @@ class ChangePaymentForm(forms.Form):
         r = Reservas.objects.get(id=id)
         if r.precio - (r.deposito + int(cantidad_deposito)) < 0:
             raise forms.ValidationError("ERROR: El saldo es negativo.") 
-    # TODO: Validate this, the difference can't be negative lmao
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(label='Usuario', strip=True, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Nombre de usuario'}))
+    username = forms.CharField(label='Usuario', strip=True, widget=forms.TextInput(attrs={'class':'form-control'}))
     password = forms.CharField(label='Contraseña', widget=forms.PasswordInput(attrs={'class':'form-control'}))
