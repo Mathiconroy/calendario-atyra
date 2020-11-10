@@ -103,7 +103,7 @@ def send_notice_reservation_email(form_results):
     # This works but TODO: next parameter in url in login doesn't work correctly
     send_mail(
         f'Pedido de reserva de {form_results["nombre"]}.',
-        f'Se pidio una reserva para {_date(form_results["fecha_inicio"])} hasta {_date(form_results["fecha_fin"])}, haga click en el siguiente enlace para ver mas informacion: {form_results["url"]}',
+        f'Se pidio una reserva para {_date(form_results["fecha_inicio"])} hasta {_date(form_results["fecha_fin"])}, haga click en el siguiente enlace para ver más información: {form_results["url"]}',
         os.environ.get('EMAIL_USERNAME', None),
         [os.environ.get('EMAIL_USERNAME', None)],
     )
@@ -167,15 +167,15 @@ def add_client_form(request):
                 if request.user.is_authenticated:
                     r.estado = 1
                     messages.add_message(request, messages.SUCCESS, 'Reserva añadida', extra_tags="alert alert-success text-center")
+                    # NOTE: Is this necessary?
+                    #if form_results['email']:
+                        #send_confirmation_email(form_results)
                 else:
                     r.estado = 0
                     form_results['url'] = request.build_absolute_uri('/view_client_form/' + str(r.id))
                     send_notice_reservation_email(form_results)
                     messages.add_message(request, messages.SUCCESS, 'Reserva pedida', extra_tags="alert alert-success text-center")
                 r.save()
-                # TODO: Probably rework this since anyone can complete this now
-                #if form_results['email']:
-                #    send_confirmation_email(form_results)
                 return redirect('index')
 
     if request.method == "GET":
