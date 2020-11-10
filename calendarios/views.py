@@ -254,8 +254,15 @@ def delete_reservation(request, id):
     return redirect('index')
 
 @login_required
+def view_reservation_requests(request):
+    r = Reservas.objects.filter(estado=0).order_by('fecha_inicio')
+    print(r)
+    return render(request, 'calendarios/view_reservation_requests.html', {'reservas':r})
+
+@login_required
 def test_mail(request):
     return render(request, 'calendarios/mail_template.html')
 
+@login_required
 def logout(request):
     return logout_then_login(request)

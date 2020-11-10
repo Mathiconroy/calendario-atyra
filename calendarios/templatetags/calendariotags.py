@@ -7,6 +7,10 @@ from ..views import casas, tipos_adelanto
 
 register = template.Library()
 
+@register.simple_tag(name='get_casa_display')
+def get_casa(value):
+    return casas[value]
+
 # Dictionary is a dictionary that has as keys a date object and as values a list with Reserva object or None
 # fecha is the date object we currently are (goes from today up to x days after, depending on what the value of days_to_count in views.py is)
 @register.simple_tag(takes_context=True, name='render_row')

@@ -22,6 +22,9 @@
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'add_client_form' %}">Añadir una reserva</a>
           </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'view_reservation_requests' %}">Ver pedidos</a>
+          </li>
           {% else %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'add_client_form' %}">Pedir una reserva</a>

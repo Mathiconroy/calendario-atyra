@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<table class="table table-responsive w-100 d-block d-md-table">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Casa</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Fecha inicio</th>
+            <th scope="col">Fecha fin</th>
+            <th scope="col">Confirmar</th>
+            <th scope="col">Ver más detalles</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% load calendariotags %}
+        {% for r in reservas %} 
+        <tr>
+            <td>{{ r.id }}</td>
+            <td>{% get_casa_display r.casa %}</td>
+            <td>{{ r.nombre }}</td>
+            <td>{{ r.fecha_inicio|date }}</td>
+            <td>{{ r.fecha_fin|date }}</td>
+            <td><a class="btn btn-primary" role="button" href="{% url 'confirm_reservation' r.id %}">Confirmar</a></td>
+            <td><a class="btn btn-primary" role="button" href="{% url 'view_client_form' r.id %}">Ver</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
