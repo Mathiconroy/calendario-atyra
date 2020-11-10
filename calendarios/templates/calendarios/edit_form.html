@@ -2,8 +2,9 @@
 
 {% block main %}
 <div class="px-xl-3 container-fluid">
+    <br>
     <div class="text-center">
-        <h1>Formulario - Editar reserva</h1>
+        <h1><b>Editar reserva</b></h1>
     </div>
     <form action="/edit_client_form/{{ id }}" method="POST">
         {% csrf_token %}
