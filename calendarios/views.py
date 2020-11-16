@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from django.urls import reverse
 
 # Modules from the project imports
-from .forms import AddClientForm, ChangePaymentForm
+from .forms import AddClientForm, ChangePaymentForm, SearchReservationForm
 from .models import Reservas
 
 # Email related imports (not Django)
