@@ -235,6 +235,10 @@ def confirm_reservation(request, id):
     return redirect('index')
 
 @login_required
+def search_reservation(request):
+    return render(request, 'search_reservations.html')
+
+@login_required
 def change_payment(request, id):
     r = Reservas.objects.get(id=id)
     if request.method == "POST":

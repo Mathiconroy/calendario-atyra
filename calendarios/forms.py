@@ -74,6 +74,18 @@ class ChangePaymentForm(forms.Form):
         if r.precio - (r.deposito + int(cantidad_deposito)) < 0:
             raise forms.ValidationError("ERROR: El saldo es negativo.") 
 
+class SearchReservationForm(forms.Form):
+    query = forms.CharField(required=False, label='Buscar', max_length=200, widget=forms.TextInput(attrs={'class':'form-control'}))
+    fecha = forms.DateField(required=False, label='Fecha', widget=forms.DateInput(attrs={'class':'form-control', 'type':'date'}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        query = cleaned_data.get('query')
+        fecha = cleaned_data.get('fecha')
+
+        if not query and not fecha:
+            raise forms.ValidationError("ERROR: Es necesario completar por lo menos uno de los campos.")
+
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Usuario', strip=True, widget=forms.TextInput(attrs={'class':'form-control'}))
     password = forms.CharField(label='Contraseña', widget=forms.PasswordInput(attrs={'class':'form-control'}))
