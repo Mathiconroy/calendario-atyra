@@ -13,7 +13,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='calendarios/login.html', authentication_form=LoginForm), name='login'),
     path('logout', views.logout, name='logout'),
     path('test', views.test_mail, name='test'),
-    path('search_reservation', views.search_reservation, name='search_reservations'),
+    path('search_reservation', views.search_reservation, name='search_reservation'),
     path('confirm_reservation/<int:id>', views.confirm_reservation, name='confirm_reservation'),
     path('delete_reservation/<int:id>', views.delete_reservation, name='delete_reservation'),
     path('change_payment/<int:id>', views.change_payment, name='change_payment'),

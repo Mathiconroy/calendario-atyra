@@ -25,6 +25,9 @@
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'view_reservation_requests' %}">Ver pedidos</a>
           </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'search_reservation' %}">Buscar reserva</a>
+          </li>
           {% else %}
           <li class="nav-item active">
             <a class="nav-link" href="{% url 'add_client_form' %}">Pedir una reserva</a>
