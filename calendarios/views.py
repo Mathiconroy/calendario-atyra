@@ -100,7 +100,6 @@ def send_confirmation_email(form_results):
     smtp.quit()
 
 def send_notice_reservation_email(form_results):
-    # This works but TODO: next parameter in url in login doesn't work correctly
     send_mail(
         f'Pedido de reserva de {form_results["nombre"]}.',
         f'Se pidio una reserva para {_date(form_results["fecha_inicio"])} hasta {_date(form_results["fecha_fin"])}, haga click en el siguiente enlace para ver más información: {form_results["url"]}',
@@ -236,7 +235,15 @@ def confirm_reservation(request, id):
 
 @login_required
 def search_reservation(request):
-    return render(request, 'search_reservations.html')
+    if request.method == "POST":
+        form = SearchReservationForm(request.POST)
+        if form.is_valid():
+            reservas = Reservas.objects.filter(nombre__icontains=form.cleaned_data['query'])
+
+    if request.method == "GET":
+        form = SearchReservationForm()
+
+    return render(request, 'search_reservation.html', {'form':form, 'reservas':reservas})
 
 @login_required
 def change_payment(request, id):
