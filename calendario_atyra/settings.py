@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get("SECRET_KEY", "SHITTY-DEV-KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['calendario-atyra.herokuapp.com']
 
@@ -75,8 +75,8 @@ WSGI_APPLICATION = 'calendario_atyra.wsgi.application'
 
 DATABASES = {
     #'default': {
-     #   'ENGINE': 'django.db.backends.sqlite3',
-     #   'NAME': 'db.sqlite3',
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': 'db.sqlite3',
     #}
 }
 # Put this in default to use the sqlite3 db
