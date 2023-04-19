@@ -1,6 +1,5 @@
 # Django related imports
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpRequest, HttpResponse
 from django.contrib import messages
 from django.template.defaultfilters import date as _date
 from django.template.loader import render_to_string
@@ -8,7 +7,6 @@ from django.contrib.staticfiles import finders
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout_then_login
 from django.core.mail import send_mail
-from django.urls import reverse
 
 # Modules from the project imports
 from .forms import AddClientForm, ChangePaymentForm, SearchReservationForm
@@ -24,14 +22,15 @@ import smtplib
 from datetime import date, timedelta
 import os
 
-casas = {1:'Barro Roga', 2:'Ysypo Roga', 3:'Hierro Roga'}
-tipos_adelanto = {0:'Giro', 1:'Depósito', 2:'Otro'}
+casas = {1: 'Barro Roga', 2: 'Ysypo Roga', 3: 'Hierro Roga'}
+tipos_adelanto = {0: 'Giro', 1: 'Depósito', 2: 'Otro'}
+
 
 def generate_rows(date_list, reservas):
     """
         date_list: A list of dates to render
         reservas: A QuerySet with all the reservas in the range of date_list
-        returns: A dictionary with the date as the key and a list with 3 elements 
+        returns: A dictionary with the date as the key and a list with 3 elements
                     representing each cell in a line for the table (having None == No reservations for that house)
     """
     dias_ocupados = {}
@@ -113,17 +112,17 @@ def index(request):
     # reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
     reservas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
     date_list = [date.today() + timedelta(days=x) for x in range(days_to_check_count)]
-    
+
     dias_ocupados_dict = generate_rows(date_list, reservas)
 
-    return render(request, 'calendarios/main.html', {'date_list':date_list, 'dias_ocupados':dias_ocupados_dict})
+    return render(request, 'calendarios/main.html', {'date_list': date_list, 'dias_ocupados': dias_ocupados_dict})
 
 def add_client_form(request):
     if request.method == "POST":
         form = AddClientForm(request.POST)
         if form.is_valid():
             form_results = form.clean() # This is here to validate again with my custom clean() method in forms.py
-            if form_results['confirm'] == False:
+            if form_results['confirm'] is False:
                 form_results['confirm'] = True
                 form = AddClientForm(initial={
                     'nombre': form_results['nombre'],
@@ -140,25 +139,24 @@ def add_client_form(request):
                 # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE IF I DO INITIAL=FORM_RESULTS
                 messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
                 precio = calculate_price(int(form_results['cantidad_adultos']), int(form_results['cantidad_menores']))
-                remove_not_used_fields(form_results)        
+                remove_not_used_fields(form_results)    
                 return render(request, 'calendarios/form.html', {
-                    'form':form,
-                    'form_results':form_results, 
-                    'confirm':True, 
-                    'precio':f'{precio:,}'.replace(',', '.'),
-                    'reserva_length':(form_results['fecha_fin'] - form_results['fecha_inicio']).days,
+                    'form': form,
+                    'form_results': form_results,
+                    'confirm': True,
+                    'precio': f'{precio:,}'.replace(',', '.'),
+                    'reserva_length': (form_results['fecha_fin'] - form_results['fecha_inicio']).days,
                 })
-                # f'{precio:,}' Use this to render price in text form
             else:
                 r = Reservas(
-                    casa=form_results['casa'], 
-                    nombre=form_results['nombre'], 
-                    email=form_results['email'], 
-                    cantidad_adultos=form_results['cantidad_adultos'], 
+                    casa=form_results['casa'],
+                    nombre=form_results['nombre'],
+                    email=form_results['email'],
+                    cantidad_adultos=form_results['cantidad_adultos'],
                     cantidad_menores=form_results['cantidad_menores'],
                     cantidad_gratis=form_results['cantidad_gratis'],
                     fecha_inicio=form_results['fecha_inicio'],
-                    fecha_fin=form_results['fecha_fin'], 
+                    fecha_fin=form_results['fecha_fin'],
                     notas=form_results['notas'],
                     tipo_adelanto=form_results['tipo_adelanto'],
                     precio=calculate_price(int(form_results['cantidad_adultos']), int(form_results['cantidad_menores'])),
@@ -178,9 +176,10 @@ def add_client_form(request):
                 return redirect('index')
 
     if request.method == "GET":
-        form = AddClientForm(initial={'edit':False})
-        
-    return render(request, 'calendarios/form.html', {'form':form, 'confirm':False})
+        form = AddClientForm(initial={'edit': False})
+
+    return render(request, 'calendarios/form.html', {'form': form, 'confirm': False})
+
 
 @login_required
 def view_client_form(request, id):
@@ -188,7 +187,8 @@ def view_client_form(request, id):
     casa = casas[int(reserva.casa)]
     estado = reserva.get_estado_display()
     tipo_adelanto = reserva.get_tipo_adelanto_display()
-    return render(request, 'calendarios/view_form.html', {'reserva':reserva, 'casa':casa, 'estado':estado, 'tipo_adelanto':tipo_adelanto})
+    return render(request, 'calendarios/view_form.html', {'reserva': reserva, 'casa': casa, 'estado': estado, 'tipo_adelanto': tipo_adelanto})
+
 
 @login_required
 def edit_client_form(request, id):
@@ -201,23 +201,24 @@ def edit_client_form(request, id):
             r = Reservas.objects.filter(id=id).update(**form)
             messages.add_message(request, messages.SUCCESS, 'Reserva editada', extra_tags="alert alert-success text-center")
             return redirect('index')
-    
+
     if request.method == "GET":
         reserva = Reservas.objects.get(id=id)
         form = AddClientForm(initial={
-            'id':reserva.id,
-            'casa':str(reserva.casa),
-            'nombre':reserva.nombre,
-            'email':reserva.email,
-            'cantidad_personas':reserva.cantidad_adultos,
-            'cantidad_menores':reserva.cantidad_menores,
-            'cantidad_gratis':reserva.cantidad_gratis,
-            'fecha_inicio':reserva.fecha_inicio,
-            'fecha_fin':reserva.fecha_fin,
-            'notas':reserva.notas,
-            'edit':True
+            'id': reserva.id,
+            'casa': str(reserva.casa),
+            'nombre': reserva.nombre,
+            'email': reserva.email,
+            'cantidad_personas': reserva.cantidad_adultos,
+            'cantidad_menores': reserva.cantidad_menores,
+            'cantidad_gratis': reserva.cantidad_gratis,
+            'fecha_inicio': reserva.fecha_inicio,
+            'fecha_fin': reserva.fecha_fin,
+            'notas': reserva.notas,
+            'edit': True
         })
-    return render(request, 'calendarios/edit_form.html', {'form':form, 'id':id})
+    return render(request, 'calendarios/edit_form.html', {'form': form, 'id': id})
+
 
 @login_required
 def confirm_reservation(request, id):
@@ -233,6 +234,7 @@ def confirm_reservation(request, id):
         messages.add_message(request, messages.WARNING, 'La reserva ya estaba confirmada', extra_tags="alert alert-warning text-center")
     return redirect('index')
 
+
 @login_required
 def search_reservation(request):
     if request.method == "POST":
@@ -243,7 +245,8 @@ def search_reservation(request):
     if request.method == "GET":
         form = SearchReservationForm()
 
-    return render(request, 'search_reservation.html', {'form':form, 'reservas':reservas})
+    return render(request, 'search_reservation.html', {'form': form, 'reservas': reservas})
+
 
 @login_required
 def change_payment(request, id):
@@ -257,24 +260,33 @@ def change_payment(request, id):
             return redirect('index')
 
     if request.method == "GET":
-        form = ChangePaymentForm(initial={'id':id, 'cantidad':r.deposito})
+        form = ChangePaymentForm(initial={'id': id, 'cantidad': r.deposito})
 
-    return render(request, 'calendarios/change_payment_form.html', {'form':form, 'reserva':r, 'saldo':f'{r.precio - r.deposito:,}', 'precio':f'{r.precio:,}'})
+    return render(request, 'calendarios/change_payment_form.html', {
+        'form': form,
+        'reserva': r,
+        'saldo': f'{r.precio - r.deposito:,}',
+        'precio': f'{r.precio:,}'}
+    )
+
 
 @login_required
 def delete_reservation(request, id):
     Reservas.objects.filter(id=id).delete()
     return redirect('index')
 
+
 @login_required
 def view_reservation_requests(request):
     r = Reservas.objects.filter(estado=0).order_by('fecha_inicio')
     print(r)
-    return render(request, 'calendarios/view_reservation_requests.html', {'reservas':r})
+    return render(request, 'calendarios/view_reservation_requests.html', {'reservas': r})
+
 
 @login_required
 def test_mail(request):
     return render(request, 'calendarios/mail_template.html')
+
 
 @login_required
 def logout(request):
