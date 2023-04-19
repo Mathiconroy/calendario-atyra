@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import django_heroku
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get("SECRET_KEY", "SHITTY-DEV-KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = bool(os.environ.get("DEBUG_MODE", True))
 
 ALLOWED_HOSTS = ['calendario-atyra.herokuapp.com']
 
@@ -74,16 +75,12 @@ WSGI_APPLICATION = 'calendario_atyra.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    #'default': {
-        #'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': 'db.sqlite3',
-    #}
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': 'db.sqlite3',
+    # }
 }
-# Put this in default to use the sqlite3 db
-#'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': 'db.sqlite3',
-#    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -128,20 +125,6 @@ USE_L10N = False
 
 USE_TZ = True
 
-# Email configuration
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
-EMAIL_HOST = 'smtp.gmail.com'
-
-EMAIL_USE_TLS = True
-
-EMAIL_PORT = 587
-
-EMAIL_HOST_USER = os.environ.get('EMAIL_USERNAME', "example@example.com")
-
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD', "myexamplepassword")
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
@@ -153,8 +136,7 @@ STATICFILES_DIRS = []
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-import dj_database_url 
+# Make this a comment to use the sqlite3 db and decomment the setting in DATABASES
 DATABASES['default'] = dj_database_url.config(conn_max_age=600)
-#Make this a comment to use the sqlite3 db and decomment the setting in DATABASES
 
 django_heroku.settings(locals())
