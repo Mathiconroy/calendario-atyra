@@ -1,26 +1,16 @@
 # Django related imports
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.template.defaultfilters import date as _date
-from django.template.loader import render_to_string
-from django.contrib.staticfiles import finders
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout_then_login
-from django.core.mail import send_mail
+
 
 # Modules from the project imports
 from .forms import AddClientForm, ChangePaymentForm, SearchReservationForm
 from .models import Reservas
 
-# Email related imports (not Django)
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
-import smtplib
-
 # Other imports
 from datetime import date, timedelta
-import os
 
 casas = {1: 'Barro Roga', 2: 'Ysypo Roga', 3: 'Hierro Roga'}
 tipos_adelanto = {0: 'Giro', 1: 'Depósito', 2: 'Otro'}
@@ -41,6 +31,7 @@ def generate_rows(date_list, reservas):
                 dias_ocupados[day][reserva.casa - 1] = reserva
     return dias_ocupados
 
+
 def calculate_price(cantidad_adultos, cantidad_menores):
     """Returns the price based on the ammount of people given."""
     precio_adultos = 150000
@@ -51,8 +42,8 @@ def calculate_price(cantidad_adultos, cantidad_menores):
         precio = total
     else:
         precio = precio_minimo
-    #f'{precio:,}'
     return precio
+
 
 def remove_not_used_fields(all_fields):
     """Removes all unused fields from a dictionary with all the form fields."""
@@ -60,68 +51,22 @@ def remove_not_used_fields(all_fields):
     for e in not_used_fields:
         all_fields.pop(e)
 
-def send_confirmation_email(form_results):
-    # TODO: Rework this, use form_results or the class.
-    """Given the dictionary of the results of a form, it sends an email with all the data."""
-    EMAIL_USERNAME = os.environ.get('EMAIL_USERNAME', None)
-    EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', None)
-    if EMAIL_PASSWORD is None or EMAIL_USERNAME is None:
-        return
-
-    msgRoot = MIMEMultipart('related')
-    msgRoot['From'] = EMAIL_USERNAME
-    msgRoot['To'] = EMAIL_PASSWORD
-    msgRoot['Subject'] = 'AtyRoga - Reserva hecha'
-
-    msgAlternative = MIMEMultipart('alternative')
-    msgRoot.attach(msgAlternative)
-
-    msgText = MIMEText(f'Buenas, {form_results["nombre"]}.\nSu reserva para {form_results["cantidad_personas"]} persona(s) se ha realizado para la casa {casas[int(form_results["casa"])]}, iniciando el {_date(form_results["fecha_inicio"])} hasta el {_date(form_results["fecha_fin"])}.\nGracias por la confianza.\nEste correo se ha enviado de forma automática.')
-    msgAlternative.attach(msgText)
-
-    msgText = MIMEText(render_to_string('calendarios/mail_template.html', context={'form':form_results, 'casa':casas[int(form_results['casa'])]}), 'html')
-    msgAlternative.attach(msgText)
-    
-    logo_path = finders.find('calendarios/AtyRoga_Logo.png')
-    imgFile = open(logo_path, 'rb')
-    msgImage = MIMEImage(imgFile.read())
-    imgFile.close()
-
-    msgImage.add_header('Content-ID', '<image1>')
-    msgRoot.attach(msgImage)
-
-    smtp = smtplib.SMTP('smtp.gmail.com:587')
-    smtp.ehlo()
-    smtp.starttls()
-    smtp.ehlo()
-    smtp.login(EMAIL_USERNAME, EMAIL_PASSWORD)
-    smtp.sendmail(EMAIL_USERNAME, form_results['email'], msgRoot.as_string())
-    smtp.quit()
-
-def send_notice_reservation_email(form_results):
-    send_mail(
-        f'Pedido de reserva de {form_results["nombre"]}.',
-        f'Se pidio una reserva para {_date(form_results["fecha_inicio"])} hasta {_date(form_results["fecha_fin"])}, haga click en el siguiente enlace para ver más información: {form_results["url"]}',
-        os.environ.get('EMAIL_USERNAME', None),
-        [os.environ.get('EMAIL_USERNAME', None)],
-    )
 
 def index(request):
-    days_to_check_count = 120
-    # CASAS ARE SAVED AS INTS NOW TO MAKE THINGS MORE SMOOTHLY WHEN QUERYING THE DB (AND MAKING IT SCALABLE)
-    # reserva_casas = [Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).filter(casa=x + 1).order_by('fecha_fin') for x in range(3)]
+    days_to_check_count = 120    
     reservas = Reservas.objects.filter(fecha_inicio__lte=date.today() + timedelta(days=days_to_check_count)).exclude(fecha_fin__lt=date.today()).order_by('fecha_inicio')
     date_list = [date.today() + timedelta(days=x) for x in range(days_to_check_count)]
-
     dias_ocupados_dict = generate_rows(date_list, reservas)
 
     return render(request, 'calendarios/main.html', {'date_list': date_list, 'dias_ocupados': dias_ocupados_dict})
+
 
 def add_client_form(request):
     if request.method == "POST":
         form = AddClientForm(request.POST)
         if form.is_valid():
-            form_results = form.clean() # This is here to validate again with my custom clean() method in forms.py
+            # This is here to validate again with my custom clean() method in forms.py
+            form_results = form.clean()
             if form_results['confirm'] is False:
                 form_results['confirm'] = True
                 form = AddClientForm(initial={
@@ -139,7 +84,7 @@ def add_client_form(request):
                 # TODO: FOR SOME REASON THE CONFIRM FIELD DOESNT GET SET TO TRUE IF I DO INITIAL=FORM_RESULTS
                 messages.add_message(request, messages.WARNING, 'Debe confirmar la reserva', extra_tags="alert alert-warning text-center")
                 precio = calculate_price(int(form_results['cantidad_adultos']), int(form_results['cantidad_menores']))
-                remove_not_used_fields(form_results)    
+                remove_not_used_fields(form_results)
                 return render(request, 'calendarios/form.html', {
                     'form': form,
                     'form_results': form_results,
@@ -164,13 +109,9 @@ def add_client_form(request):
                 if request.user.is_authenticated:
                     r.estado = 1
                     messages.add_message(request, messages.SUCCESS, 'Reserva añadida', extra_tags="alert alert-success text-center")
-                    # NOTE: Is this necessary?
-                    #if form_results['email']:
-                        #send_confirmation_email(form_results)
                 else:
                     r.estado = 0
                     form_results['url'] = request.build_absolute_uri('/view_client_form/' + str(r.id))
-                    send_notice_reservation_email(form_results)
                     messages.add_message(request, messages.SUCCESS, 'Reserva pedida', extra_tags="alert alert-success text-center")
                 r.save()
                 return redirect('index')
@@ -187,7 +128,12 @@ def view_client_form(request, id):
     casa = casas[int(reserva.casa)]
     estado = reserva.get_estado_display()
     tipo_adelanto = reserva.get_tipo_adelanto_display()
-    return render(request, 'calendarios/view_form.html', {'reserva': reserva, 'casa': casa, 'estado': estado, 'tipo_adelanto': tipo_adelanto})
+    return render(request, 'calendarios/view_form.html', {
+        'reserva': reserva,
+        'casa': casa,
+        'estado': estado,
+        'tipo_adelanto': tipo_adelanto
+    })
 
 
 @login_required
@@ -195,7 +141,8 @@ def edit_client_form(request, id):
     if request.method == "POST":
         form = AddClientForm(request.POST)
         if form.is_valid():
-            form = form.clean() # This is here to validate again with my custom clean() method in forms.py
+            # This is here to validate again with my custom clean() method in forms.py
+            form = form.clean()
             remove_not_used_fields(form)
             form['casa'] = int(form['casa'])
             r = Reservas.objects.filter(id=id).update(**form)
@@ -228,8 +175,6 @@ def confirm_reservation(request, id):
         r.estado = 1
         r.save()
         messages.add_message(request, messages.SUCCESS, 'Reserva confirmada', extra_tags="alert alert-success text-center")
-        # TODO: This
-        #send_confirmation_email()
     else:
         messages.add_message(request, messages.WARNING, 'La reserva ya estaba confirmada', extra_tags="alert alert-warning text-center")
     return redirect('index')
