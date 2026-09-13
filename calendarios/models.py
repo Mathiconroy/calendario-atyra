@@ -1,14 +1,15 @@
 from django.db import models
 
+
 class Reservas(models.Model):
     ESTADOS = [
-        (0, 'Pendiente'),
-        (1, 'Ocupado'),
+        (0, "Pendiente"),
+        (1, "Ocupado"),
     ]
     TIPOS_ADELANTO = [
-        (0, 'Giro'),
-        (1, 'Depósito'),
-        (2, 'Otro'),
+        (0, "Giro"),
+        (1, "Depósito"),
+        (2, "Otro"),
     ]
     casa = models.IntegerField(null=False)
     nombre = models.CharField(null=False, max_length=150)

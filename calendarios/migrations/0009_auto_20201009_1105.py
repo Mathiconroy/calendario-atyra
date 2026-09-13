@@ -4,30 +4,31 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('calendarios', '0008_auto_20200120_0944'),
+        ("calendarios", "0008_auto_20200120_0944"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='reservas',
-            old_name='cantidad_personas',
-            new_name='cantidad_adultos',
+            model_name="reservas",
+            old_name="cantidad_personas",
+            new_name="cantidad_adultos",
         ),
         migrations.AddField(
-            model_name='reservas',
-            name='cantidad_gratis',
+            model_name="reservas",
+            name="cantidad_gratis",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='reservas',
-            name='cantidad_menores',
+            model_name="reservas",
+            name="cantidad_menores",
             field=models.IntegerField(default=0),
         ),
         migrations.AddField(
-            model_name='reservas',
-            name='estado',
-            field=models.IntegerField(choices=[(0, 'Libre'), (1, 'Pendiente'), (2, 'Ocupado')], default=2),
+            model_name="reservas",
+            name="estado",
+            field=models.IntegerField(
+                choices=[(0, "Libre"), (1, "Pendiente"), (2, "Ocupado")], default=2
+            ),
         ),
     ]

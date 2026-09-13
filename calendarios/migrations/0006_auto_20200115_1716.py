@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('calendarios', '0005_auto_20200115_1625'),
+        ("calendarios", "0005_auto_20200115_1625"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='reservas',
-            name='id',
+            model_name="reservas",
+            name="id",
             field=models.IntegerField(primary_key=True, serialize=False),
         ),
     ]
