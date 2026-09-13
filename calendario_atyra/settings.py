@@ -24,7 +24,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "SHITTY-DEV-KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DEBUG_MODE", True))
 
-ALLOWED_HOSTS = [os.environ.get("HOST", "127.0.0.1"),]
+ALLOWED_HOSTS = [
+    os.environ.get("HOST", "127.0.0.1"),
+]
 
 # Application definition
 
@@ -72,21 +74,14 @@ WSGI_APPLICATION = "calendario_atyra.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-os.environ.setdefault("DBENGINE", "django.db.backends.sqlite3")
-os.environ.setdefault("PGDATABASE", "db.sqlite3")
-os.environ.setdefault("PGUSER", "username")
-os.environ.setdefault("PGPASSWORD", "")
-os.environ.setdefault("PGHOST", "localhost")
-os.environ.setdefault("PGPORT", "5432")
-
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("DBENGINE", "django.db.backends.sqlite3"),
         "NAME": os.environ.get("PGDATABASE", "db.sqlite3"),
-        "USER": os.environ["PGUSER"],
-        "PASSWORD": os.environ["PGPASSWORD"],
-        "HOST": os.environ["PGHOST"],
-        "PORT": os.environ["PGPORT"],
+        "USER": os.environ.get("PGUSER", ""),
+        "PASSWORD": os.environ.get("PGPASSWORD", ""),
+        "HOST": os.environ.get("PGHOST", ""),
+        "PORT": os.environ.get("PGPORT", ""),
     }
 }
 
